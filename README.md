@@ -1,1 +1,83 @@
 # ipfs-provider
+
+[![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](https://protocol.ai)
+[![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
+[![Build Status](https://flat.badgen.net/travis/ipfs-shipyard/ipfs-provider)](https://travis-ci.com/ipfs-shipyard/ipfs-provider)
+[![Dependency Status](https://david-dm.org/ipfs-shipyard/ipfs-provider.svg?style=flat-square)](https://david-dm.org/ipfs-shipyard/ipfs-provider)
+
+Connect to IPFS via an available provider.
+
+This module tries to connect to IPFS via multiple providers, in order:
+
+- `ipfs-companion` the IPFS instance from [IPFS Companion](https://github.com/ipfs-shipyard/ipfs-companion) directly.
+- `window.ipfs` in the current page via [IPFS Companion](https://github.com/ipfs-shipyard/ipfs-companion).
+- `js-ipfs-http-client` with either a user provided `apiAddress`, the current origin, or the default `/ip4/127.0.0.1/tcp/5001` address.
+- `js-ipfs` **disabled by default**. See [Enable js-ipfs](#enable-js-ipfs) for more info.
+
+
+This is a port of the [ipfs-redux-bundle](https://github.com/ipfs-shipyard/ipfs-redux-bundle).
+
+## Install
+
+```sh
+> npm install ipfs-provider
+```
+
+## Usage
+
+```js
+import getIpfs from 'ipfs-provider'
+
+const ipfs = await getIpfs({
+  // These are the defaults:
+  tryCompanion: true, // set false to bypass ipfs-companion verification
+  tryWindow: true,    // set false to bypass window.ipfs verification
+  tryApi: true,       // set false to bypass js-ipfs-http-client verification
+  apiAddress: null    // set this to use an api in that address if tryApi is true
+  tryJsIpfs: false,   // set true to attempt js-ipfs initialisation
+  getJsIpfs: null,    // must be set to a js-ipfs instance if tryJsIpfs is true
+  jsIpfsOpts: {}      // set the js-ipfs options you want if tryJsIpfs is true
+})
+```
+
+### Enable js-ipfs
+
+To enable `js-ipfs`, pass the following options:
+
+```js
+const ipfs = await getIpfs({
+  tryJsIpfs: true,
+  getJsIpfs: () => import('ipfs'),
+  jsIpfsOpts: { /* advanced config */ }
+})
+```
+
+- `tryJsIpfs` should be set to `true`
+- `getJsIpfs` should be a function that returns a promise that resolves with a `JsIpfs` constructor. This works well with [dynamic `import()`](https://developers.google.com/web/updates/2017/11/dynamic-import), so you can lazily load js-ipfs when it is needed.
+- `jsIpfsOpts` should be an object which specifies [advanced configurations](https://github.com/ipfs/js-ipfs#ipfs-constructor) to the node.
+
+## Test
+
+```sh
+> npm test
+```
+
+## Lint
+
+Perform [`standard`](https://standardjs.com/) linting on the code:
+
+```sh
+> npm run lint
+```
+
+## Contribute
+
+Feel free to dive in! [Open an issue](https://github.com/ipfs-shipyard/ipfs-provider/issues/new) or submit PRs.
+
+To contribute to IPFS in general, see the [contributing guide](https://github.com/ipfs/community/blob/master/CONTRIBUTING.md).
+
+[![](https://cdn.rawgit.com/jbenet/contribute-ipfs-gif/master/img/contribute.gif)](https://github.com/ipfs/community/blob/master/CONTRIBUTING.md)
+
+## License
+
+[MIT](LICENSE) © Protocol Labs
