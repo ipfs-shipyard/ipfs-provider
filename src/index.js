@@ -10,19 +10,25 @@ const tryApi = require('./providers/ipfs-http-api')
 const tryJsIpfs = require('./providers/js-ipfs')
 
 async function getIpfs (opts) {
-  opts = Object.assign({}, {
+  const defaultOpts = {
     tryCompanion: true,
     tryWindow: true,
     tryApi: true,
     tryJsIpfs: false,
     defaultApiAddress: '/ip4/127.0.0.1/tcp/5001',
-    apiAddress: getProvidedApiAddress(opts.apiAddress),
+    apiAddress: null,
     jsIpfsOpts: {},
     ipfsConnectionTest: (ipfs) => {
       // ipfs connection is working if can we fetch the empty directtory.
       return ipfs.get('QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn')
     }
-  }, opts)
+  }
+
+  if (opts && opts.apiAddress) {
+    opts.apiAddress = validateProvidedApiAddress(opts.apiAddress)
+  }
+
+  opts = Object.assign({}, defaultOpts, opts)
 
   const { ipfsConnectionTest } = opts
 
@@ -46,7 +52,7 @@ async function getIpfs (opts) {
   }
 }
 
-function getProvidedApiAddress (address) {
+function validateProvidedApiAddress (address) {
   if (address && !isMultiaddress(address)) {
     console.warn(`The ipfsApi address ${address} is invalid.`)
     return null
