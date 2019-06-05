@@ -1,11 +1,12 @@
 'use strict'
-/* global describe, it, expect, jest */
+/* global jest, describe, it, expect */
 
 const tryCompanion = require('../src/providers/ipfs-companion.js')
 const tryWindow = require('../src/providers/window-ipfs.js')
 const tryApi = require('../src/providers/ipfs-http-api.js')
 const tryJsIpfs = require('../src/providers/js-ipfs.js')
 const PROVIDERS = require('../src/constants/providers.js')
+const getIpfs = require('../src/index.js')
 
 describe('provider: ipfs-companion', () => {
   it('should connect to ipfs-companion', async () => {
@@ -126,5 +127,17 @@ describe('provider: js-ipfs', () => {
     expect(res.provider).toEqual(PROVIDERS.jsipfs)
     expect(opts.ipfsConnectionTest.mock.calls.length).toBe(1)
     expect(opts.initJsIpfs.mock.calls.length).toBe(1)
+  })
+})
+
+describe('getIpfs via providers', () => {
+  it('should try nothing and fail if all providers are disabled', async () => {
+    const res = await getIpfs({
+      tryCompanion: false,
+      tryWindow: false,
+      tryApi: false,
+      tryJsIpfs: false
+    })
+    expect(res).toBe(undefined)
   })
 })
