@@ -5,7 +5,7 @@
 [![Build Status](https://flat.badgen.net/travis/ipfs-shipyard/ipfs-provider)](https://travis-ci.com/ipfs-shipyard/ipfs-provider)
 [![Dependency Status](https://david-dm.org/ipfs-shipyard/ipfs-provider.svg?style=flat-square)](https://david-dm.org/ipfs-shipyard/ipfs-provider)
 
-Connect to IPFS via an available provider.
+> Connect to IPFS via an available provider.
 
 This module tries to connect to IPFS via multiple providers, in order:
 
@@ -52,7 +52,7 @@ const ipfs = await getIpfs({
 })
 ```
 
-- `tryJsIpfs` should be set to `true`
+- `tryJsIpfs` should be set to `true`.
 - `getJsIpfs` should be a function that returns a promise that resolves with a `JsIpfs` constructor. This works well with [dynamic `import()`](https://developers.google.com/web/updates/2017/11/dynamic-import), so you can lazily load js-ipfs when it is needed.
 - `jsIpfsOpts` should be an object which specifies [advanced configurations](https://github.com/ipfs/js-ipfs#ipfs-constructor) to the node.
 
