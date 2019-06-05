@@ -33,22 +33,26 @@ async function getIpfs (opts) {
   const { ipfsConnectionTest } = opts
 
   if (opts.tryCompanion) {
-    return tryCompanion({ root, ipfsConnectionTest })
+    const res = await tryCompanion({ root, ipfsConnectionTest })
+    if (res) return res.ipfs
   }
 
   if (opts.tryWindow) {
-    return tryWindow({ root, ipfsConnectionTest })
+    const res = await tryWindow({ root, ipfsConnectionTest })
+    if (res) return res.ipfs
   }
 
   if (opts.tryApi) {
     const { apiAddress, defaultApiAddress } = opts
     const { location } = root
-    return tryApi({ apiAddress, defaultApiAddress, location, IpfsApi, ipfsConnectionTest })
+    const res = await tryApi({ apiAddress, defaultApiAddress, location, IpfsApi, ipfsConnectionTest })
+    if (res) return res.ipfs
   }
 
   if (opts.tryJsIpfs) {
     const { getJsIpfs, jsIpfsOpts } = opts
-    return tryJsIpfs({ jsIpfsOpts, getJsIpfs, ipfsConnectionTest })
+    const res = await tryJsIpfs({ jsIpfsOpts, getJsIpfs, ipfsConnectionTest })
+    if (res) return res.ipfs
   }
 }
 
