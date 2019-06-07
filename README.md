@@ -28,7 +28,7 @@ This is a port of the [ipfs-redux-bundle](https://github.com/ipfs-shipyard/ipfs-
 ```js
 import getIpfs from 'ipfs-provider'
 
-const ipfs = await getIpfs({
+const { ipfs, provider } = await getIpfs({
   // These are the defaults:
   tryCompanion: true, // set false to bypass ipfs-companion verification
   tryWindow: true,    // set false to bypass window.ipfs verification
@@ -40,12 +40,15 @@ const ipfs = await getIpfs({
 })
 ```
 
+- `ipfs` is the running IPFS instance.
+- `provider` is a string representing the chosen provider, either: `IPFS_COMPANION`, `WINDOW_IPFS`, `IPFS_HTTP_API` or `JS_IPFS`.
+
 ### Enable js-ipfs
 
 To enable `js-ipfs`, pass the following options:
 
 ```js
-const ipfs = await getIpfs({
+const { ipfs, provider } = await getIpfs({
   tryJsIpfs: true,
   getJsIpfs: () => import('ipfs'),
   jsIpfsOpts: { /* advanced config */ }
