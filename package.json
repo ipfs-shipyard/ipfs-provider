@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "lint": "standard",
-    "test": "jest"
+    "test": "jest --verbose"
   },
   "repository": {
     "type": "git",

@@ -34,31 +34,31 @@ async function getIpfs (opts) {
 
   if (opts.tryCompanion) {
     const res = await tryCompanion({ root, ipfsConnectionTest })
-    if (res) return res.ipfs
+    if (res) return res
   }
 
   if (opts.tryWindow) {
     const res = await tryWindow({ root, ipfsConnectionTest })
-    if (res) return res.ipfs
+    if (res) return res
   }
 
   if (opts.tryApi) {
     const { apiAddress, defaultApiAddress } = opts
     const { location } = root
     const res = await tryApi({ apiAddress, defaultApiAddress, location, IpfsApi, ipfsConnectionTest })
-    if (res) return res.ipfs
+    if (res) return res
   }
 
   if (opts.tryJsIpfs) {
     const { getJsIpfs, jsIpfsOpts } = opts
     const res = await tryJsIpfs({ jsIpfsOpts, getJsIpfs, ipfsConnectionTest })
-    if (res) return res.ipfs
+    if (res) return res
   }
 }
 
 function validateProvidedApiAddress (address) {
   if (address && !isMultiaddress(address)) {
-    console.warn(`The ipfsApi address ${address} is invalid.`)
+    // `address` is not a valid multiaddr
     return null
   }
   return address

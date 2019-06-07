@@ -3,6 +3,8 @@
 const PROVIDERS = require('../constants/providers')
 
 function promiseMeJsIpfs (Ipfs, opts) {
+  // Allow the use of `import` or `require` on `getJsIpfs` fn
+  Ipfs = Ipfs.default || Ipfs
   return new Promise((resolve, reject) => {
     const ipfs = new Ipfs(opts)
     ipfs.once('ready', () => resolve(ipfs))
@@ -11,17 +13,10 @@ function promiseMeJsIpfs (Ipfs, opts) {
 }
 
 async function tryJsIpfs ({ ipfsConnectionTest, getJsIpfs, jsIpfsOpts, initJsIpfs = promiseMeJsIpfs }) {
-  try {
-    console.info('Fetching js-ipfs')
-    const Ipfs = await getJsIpfs()
-    console.info('Trying js-ipfs', jsIpfsOpts)
-    const ipfs = await initJsIpfs(Ipfs, jsIpfsOpts)
-    await ipfsConnectionTest(ipfs)
-    console.info('js-ipfs ready!')
-    return { ipfs, provider: PROVIDERS.jsipfs }
-  } catch (error) {
-    console.warn('Failed to initialise js-ipfs', error)
-  }
+  const Ipfs = await getJsIpfs()
+  const ipfs = await initJsIpfs(Ipfs, jsIpfsOpts)
+  await ipfsConnectionTest(ipfs)
+  return { ipfs, provider: PROVIDERS.jsipfs }
 }
 
 module.exports = tryJsIpfs
