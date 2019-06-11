@@ -9,10 +9,10 @@
 
 This module tries to connect to IPFS via multiple providers, in order:
 
-- `ipfs-companion` the IPFS instance from [IPFS Companion](https://github.com/ipfs-shipyard/ipfs-companion) directly.
-- `window.ipfs` in the current page via [IPFS Companion](https://github.com/ipfs-shipyard/ipfs-companion).
-- `js-ipfs-http-client` with either a user provided `apiAddress`, the current origin, or the default `/ip4/127.0.0.1/tcp/5001` address.
-- `js-ipfs` **disabled by default**. See [Enable js-ipfs](#enable-js-ipfs) for more info.
+- `webext` is looking for instance in [background page of WebExtension](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/extension/getBackgroundPage) (not used on regular web)
+- [`window.ipfs`](https://github.com/ipfs-shipyard/ipfs-companion/blob/master/docs/window.ipfs.md) proxy in the current page (provided by [IPFS Companion](https://github.com/ipfs-shipyard/ipfs-companion) browser extension)
+- [`js-ipfs-http-client`](https://github.com/ipfs/js-ipfs-http-client) with either a user provided `apiAddress`, the current origin, or the default `/ip4/127.0.0.1/tcp/5001` address
+- [`js-ipfs`](https://github.com/ipfs/js-ipfs) is spawning a full IPFS node (**Disabled by default:** see [Enable js-ipfs](#enable-js-ipfs) for more info)
 
 
 This is a port of the [ipfs-redux-bundle](https://github.com/ipfs-shipyard/ipfs-redux-bundle).
@@ -30,7 +30,7 @@ import getIpfs from 'ipfs-provider'
 
 const { ipfs, provider } = await getIpfs({
   // These are the defaults:
-  tryCompanion: true, // set false to bypass ipfs-companion verification
+  tryWebExt: true,    // set false to bypass WebExtension verification
   tryWindow: true,    // set false to bypass window.ipfs verification
   tryApi: true,       // set false to bypass js-ipfs-http-client verification
   apiAddress: null    // set this to use an api in that address if tryApi is true
@@ -41,7 +41,7 @@ const { ipfs, provider } = await getIpfs({
 ```
 
 - `ipfs` is the running IPFS instance.
-- `provider` is a string representing the chosen provider, either: `IPFS_COMPANION`, `WINDOW_IPFS`, `IPFS_HTTP_API` or `JS_IPFS`.
+- `provider` is a string representing the chosen provider, either: `WEBEXT`, `WINDOW_IPFS`, `IPFS_HTTP_API` or `JS_IPFS`.
 
 ### Enable js-ipfs
 

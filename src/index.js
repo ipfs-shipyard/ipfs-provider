@@ -4,14 +4,14 @@ const root = require('window-or-global')
 const multiaddr = require('multiaddr')
 const IpfsApi = require('ipfs-http-client')
 
-const tryCompanion = require('./providers/ipfs-companion')
+const tryWebExt = require('./providers/webext')
 const tryWindow = require('./providers/window-ipfs')
 const tryApi = require('./providers/ipfs-http-api')
 const tryJsIpfs = require('./providers/js-ipfs')
 
 async function getIpfs (opts) {
   const defaultOpts = {
-    tryCompanion: true,
+    tryWebExt: true,
     tryWindow: true,
     tryApi: true,
     tryJsIpfs: false,
@@ -32,8 +32,8 @@ async function getIpfs (opts) {
 
   const { ipfsConnectionTest } = opts
 
-  if (opts.tryCompanion) {
-    const res = await tryCompanion({ root, ipfsConnectionTest })
+  if (opts.tryWebExt) {
+    const res = await tryWebExt({ root, ipfsConnectionTest })
     if (res) return res
   }
 

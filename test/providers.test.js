@@ -3,14 +3,14 @@
 
 const IpfsApi = require('ipfs-http-client')
 
-const tryCompanion = require('../src/providers/ipfs-companion.js')
+const tryWebExt = require('../src/providers/webext.js')
 const tryWindow = require('../src/providers/window-ipfs.js')
 const tryApi = require('../src/providers/ipfs-http-api.js')
 const tryJsIpfs = require('../src/providers/js-ipfs.js')
 const PROVIDERS = require('../src/constants/providers.js')
 
-describe('provider: ipfs-companion', () => {
-  it('should connect to ipfs-companion', async () => {
+describe('provider: webext', () => {
+  it('should connect to webext', async () => {
     // chrome.extension.getBackgroundPage().ipfsCompanion.ipfs will be present
     // only if page was loaded from a path that belongs to our browser extension
     const mockIpfs = {}
@@ -31,9 +31,9 @@ describe('provider: ipfs-companion', () => {
       expect(ipfs).toEqual(mockIpfs)
       Promise.resolve()
     }
-    const { ipfs, provider } = await tryCompanion({ root, ipfsConnectionTest })
+    const { ipfs, provider } = await tryWebExt({ root, ipfsConnectionTest })
     expect(ipfs).toEqual(mockIpfs)
-    expect(provider).toEqual(PROVIDERS.companion)
+    expect(provider).toEqual(PROVIDERS.webext)
   })
 })
 

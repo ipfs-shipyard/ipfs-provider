@@ -2,8 +2,8 @@
 
 const PROVIDERS = require('../constants/providers')
 
-async function tryCompanion ({ root, ipfsConnectionTest }) {
-  // Opportunistic optimizations when running from ipfs-companion (+ ipfs-desktop in future)
+async function tryWebExt ({ root, ipfsConnectionTest }) {
+  // Opportunistic optimizations when running inside of web extension (eg. ipfs-companion)
   if (typeof root.chrome === 'object' && root.chrome.extension && root.chrome.extension.getBackgroundPage) {
     // Note: under some vendors getBackgroundPage() will return null if window is in incognito mode
     // https://bugzilla.mozilla.org/show_bug.cgi?id=1329304
@@ -14,13 +14,17 @@ async function tryCompanion ({ root, ipfsConnectionTest }) {
       // no ipfs companion for you
       return null
     }
-    // If extension is ipfs-companion exposing IPFS API, use it directly for best performance
+    // If extension is ipfs-companion and it is exposing IPFS API,
+    // use it directly for the best performance
     if (webExt && webExt.ipfsCompanion && webExt.ipfsCompanion.ipfs) {
       const ipfs = webExt.ipfsCompanion.ipfs
       await ipfsConnectionTest(ipfs)
-      return { ipfs, provider: PROVIDERS.companion }
+      return { ipfs, provider: PROVIDERS.webext }
     }
+    /*  Other endpoints can be added here in the future.
+        For example, Companion could provide API for other browser extensions:
+        https://github.com/ipfs-shipyard/ipfs-companion/issues/307 */
   }
 }
 
-module.exports = tryCompanion
+module.exports = tryWebExt
