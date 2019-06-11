@@ -9,10 +9,10 @@
 
 This module tries to connect to IPFS via multiple providers, in order:
 
-- `webext` is looking for instance in [background page of WebExtension](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/extension/getBackgroundPage) (not used on regular web)
-- [`window.ipfs`](https://github.com/ipfs-shipyard/ipfs-companion/blob/master/docs/window.ipfs.md) proxy in the current page (provided by [IPFS Companion](https://github.com/ipfs-shipyard/ipfs-companion) browser extension)
-- [`js-ipfs-http-client`](https://github.com/ipfs/js-ipfs-http-client) with either a user provided `apiAddress`, the current origin, or the default `/ip4/127.0.0.1/tcp/5001` address
-- [`js-ipfs`](https://github.com/ipfs/js-ipfs) is spawning a full IPFS node (**Disabled by default:** see [Enable js-ipfs](#enable-js-ipfs) for more info)
+- `webext` looks for an instance in the [background page of a WebExtension](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/extension/getBackgroundPage) (not used on regular web).
+- [`window.ipfs`](https://github.com/ipfs-shipyard/ipfs-companion/blob/master/docs/window.ipfs.md) proxy in the current page (provided by the [IPFS Companion](https://github.com/ipfs-shipyard/ipfs-companion) browser extension).
+- [`js-ipfs-http-client`](https://github.com/ipfs/js-ipfs-http-client) with either a user provided `apiAddress`, the current origin, or the default address (`/ip4/127.0.0.1/tcp/5001`).
+- [`js-ipfs`](https://github.com/ipfs/js-ipfs) spawns an in process instance of IPFS (**disabled by default:** see [Enable js-ipfs](#enable-js-ipfs) for more info).
 
 
 This is a port of the [ipfs-redux-bundle](https://github.com/ipfs-shipyard/ipfs-redux-bundle).
