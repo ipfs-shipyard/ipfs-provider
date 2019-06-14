@@ -14,7 +14,7 @@ async function tryApi ({ IpfsApi, apiAddress, defaultApiAddress, location, ipfsC
   }
 
   // Current origin is not localhost:5001 so try with current origin info
-  if (location.port !== '5001' || !location.hostname.match(/^127.0.0.1$|^localhost$/)) {
+  if (location && (location.port !== '5001' || !location.hostname.match(/^127.0.0.1$|^localhost$/))) {
     let originAddress = null
 
     try {
