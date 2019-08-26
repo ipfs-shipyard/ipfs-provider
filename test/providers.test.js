@@ -38,7 +38,32 @@ describe('provider: webext', () => {
 })
 
 describe('provider: window.ipfs', () => {
-  it('should connect to window.ipfs', async () => {
+  it('should use window.ipfs v2 (no permissions)', async () => {
+    const opts = {
+      root: {
+        ipfs: { enable: async (args) => 'ok' }
+      },
+      ipfsConnectionTest: jest.fn().mockResolvedValueOnce(true)
+    }
+    const { ipfs, provider } = await tryWindow(opts)
+    expect(ipfs).toEqual('ok')
+    expect(provider).toEqual(PROVIDERS.window)
+    expect(opts.ipfsConnectionTest.mock.calls.length).toBe(1)
+  })
+  it('should use window.ipfs v2 (with permissions)', async () => {
+    const opts = {
+      root: {
+        ipfs: { enable: async (args) => args }
+      },
+      ipfsConnectionTest: jest.fn().mockResolvedValueOnce(true),
+      permissions: Object.freeze({ foo: ['a', 'b', 'c'], bar: ['1', '2', '3'], buzz: false })
+    }
+    const { ipfs, provider } = await tryWindow(opts)
+    expect(ipfs).toEqual(opts.permissions)
+    expect(provider).toEqual(PROVIDERS.window)
+    expect(opts.ipfsConnectionTest.mock.calls.length).toBe(1)
+  })
+  it('should fallback to window.ipfs v1', async () => {
     const opts = {
       root: {
         ipfs: {}
