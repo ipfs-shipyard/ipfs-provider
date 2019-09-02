@@ -38,7 +38,8 @@ async function getIpfs (opts) {
   }
 
   if (opts.tryWindow) {
-    const res = await tryWindow({ root, ipfsConnectionTest })
+    const { permissions } = opts
+    const res = await tryWindow({ root, permissions, ipfsConnectionTest })
     if (res) return res
   }
 

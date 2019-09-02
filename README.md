@@ -32,6 +32,7 @@ const { ipfs, provider } = await getIpfs({
   // These are the defaults:
   tryWebExt: true,    // set false to bypass WebExtension verification
   tryWindow: true,    // set false to bypass window.ipfs verification
+  permissions: {}     // set the window.ipfs options you want if tryWindow is true
   tryApi: true,       // set false to bypass js-ipfs-http-client verification
   apiAddress: null    // set this to use an api in that address if tryApi is true
   tryJsIpfs: false,   // set true to attempt js-ipfs initialisation
@@ -58,6 +59,21 @@ const { ipfs, provider } = await getIpfs({
 - `tryJsIpfs` should be set to `true`.
 - `getJsIpfs` should be a function that returns a promise that resolves with a `JsIpfs` constructor. This works well with [dynamic `import()`](https://developers.google.com/web/updates/2017/11/dynamic-import), so you can lazily load js-ipfs when it is needed.
 - `jsIpfsOpts` should be an object which specifies [advanced configurations](https://github.com/ipfs/js-ipfs#ipfs-constructor) to the node.
+
+### Enable window.ipfs
+
+`window.ipfs` is an experimental feature provided by [ipfs-companion](https://github.com/ipfs/ipfs-companion) browser extension. It supports passing an optional  list of permissions to [display a single ACL prompt](https://github.com/ipfs-shipyard/ipfs-companion/blob/master/docs/window.ipfs.md#do-i-need-to-confirm-every-api-call) the first time it is used:
+
+```js
+const { ipfs, provider } = await getIpfs({
+  tryWindow: true,
+  permissions: { commands: ['add','cat','id', 'version'] },
+  tryJsIpfs: true,
+...
+```
+
+**Note:**  Make sure to enable at least one other provider such as js-ipfs as a fallback to ensure users without `window.ipfs` are able to use your app.
+
 
 ## Test
 
