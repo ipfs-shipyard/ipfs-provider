@@ -1,6 +1,8 @@
 'use strict'
 /* global jest, describe, it, expect */
 
+const IpfsApi = require('ipfs-http-client')
+
 const tryWebExt = require('../src/providers/webext.js')
 const tryWindow = require('../src/providers/window-ipfs.js')
 const tryApi = require('../src/providers/ipfs-http-api.js')
@@ -47,6 +49,8 @@ describe('getIpfs via availabe providers', () => {
     tryWebExt.mockResolvedValue(null)
     tryWindow.mockResolvedValue(null)
     tryApi.mockResolvedValue(mockResult)
+    global.window.IpfsApi = IpfsApi
+    expect(global.window.IpfsApi).toBeDefined()
     const { ipfs, provider } = await getIpfs()
     expect(ipfs).toBeTruthy()
     expect(provider).toBe(mockResult.provider)

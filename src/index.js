@@ -2,12 +2,35 @@
 
 const root = require('window-or-global')
 const multiaddr = require('multiaddr')
-const IpfsApi = require('ipfs-http-client')
 
 const tryWebExt = require('./providers/webext')
 const tryWindow = require('./providers/window-ipfs')
 const tryApi = require('./providers/ipfs-http-api')
 const tryJsIpfs = require('./providers/js-ipfs')
+
+async function loadLibrary (id, url) {
+  return new Promise((resolve, reject) => {
+    try {
+      if (document.getElementById(id) == null) {
+        const script = document.createElement('script')
+        script.type = 'text/javascript'
+        script.id = id
+        script.async = false
+        script.defer = false
+        script.src = url
+        document.head.appendChild(script)
+        script.onload = () => {
+          console.log('Loaded Library: ' + script.src)
+          resolve(true)
+        }
+      } else {
+        resolve(true)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
 
 async function getIpfs (opts) {
   const defaultOpts = {
@@ -46,6 +69,12 @@ async function getIpfs (opts) {
   if (opts.tryApi) {
     const { apiAddress, defaultApiAddress } = opts
     const { location } = root
+    var IpfsApi = window.IpfsApi
+    if (IpfsApi === undefined && window.IpfsHttpClient === undefined) {
+      // https://github.com/ipfs/js-ipfs-http-client
+      await loadLibrary('IpfsHttpClientLibrary', 'https://unpkg.com/ipfs-http-client/dist/index.js')
+      IpfsApi = window.IpfsHttpClient
+    }
     const res = await tryApi({ apiAddress, defaultApiAddress, location, IpfsApi, ipfsConnectionTest })
     if (res) return res
   }
