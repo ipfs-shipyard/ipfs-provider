@@ -69,11 +69,11 @@ async function getIpfs (opts) {
   if (opts.tryApi) {
     const { apiAddress, defaultApiAddress } = opts
     const { location } = root
-    var IpfsApi = window.IpfsApi
-    if (IpfsApi === undefined && window.IpfsHttpClient === undefined) {
+    var IpfsApi = root.IpfsApi
+    if (IpfsApi === undefined && root.IpfsHttpClient === undefined) {
       // https://github.com/ipfs/js-ipfs-http-client
       await loadLibrary('IpfsHttpClientLibrary', 'https://unpkg.com/ipfs-http-client/dist/index.js')
-      IpfsApi = window.IpfsHttpClient
+      IpfsApi = root.IpfsHttpClient
     }
     const res = await tryApi({ apiAddress, defaultApiAddress, location, IpfsApi, ipfsConnectionTest })
     if (res) return res
