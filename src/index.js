@@ -77,8 +77,8 @@ async function getIpfs (opts) {
     const { apiAddress, defaultApiAddress } = opts
     const { location } = root
     var IpfsApi = root.IpfsApi
-    if (IpfsApi == undefined) {
-      if (root.IpfsHttpClient == undefined) {
+    if (IpfsApi === undefined) {
+      if (root.IpfsHttpClient === undefined) {
         // https://github.com/ipfs/js-ipfs-http-client
         await loadLibrary('IpfsHttpClientLibrary', 'https://unpkg.com/ipfs-http-client/dist/index.js')
       }
