@@ -11,26 +11,27 @@ const tryJsIpfs = require('./providers/js-ipfs')
 async function loadLibrary (id, url) {
   return new Promise((resolve, reject) => {
     try {
-      if (document.getElementById(id) == null) {
-        const script = document.createElement('script')
-        script.type = 'text/javascript'
-        script.id = id
-        script.async = false
-        script.defer = false
-        script.src = url
-        document.head.appendChild(script)
-        try {
+      // Browser side
+      if (root.document !== undefined) {
+        if (root.document.getElementById(id) == null) {
+          const script = root.document.createElement('script')
+          script.type = 'text/javascript'
+          script.id = id
+          script.async = false
+          script.defer = false
+          script.src = url
+          script.crossorigin = 'anonymous'
+          root.document.head.appendChild(script)
           script.onload = () => {
-            console.log('Loaded Library: ' + script.src)
+            console.log('Library loaded: ' + url)
             resolve(true)
           }
-        } catch (error) {
-          // if onload crash, give a chance to retry
-          document.head.removeChild(script)
-          reject(error)
+        } else {
+          resolve(true)
         }
+      // TODO: server side
       } else {
-        resolve(true)
+        reject(new Error('Unable to load library: ' + url))
       }
     } catch (error) {
       reject(error)
