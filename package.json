@@ -1,6 +1,6 @@
 {
   "name": "ipfs-provider",
-  "version": "v0.2.4",
+  "version": "v0.2.5",
   "description": "Connect to IPFS via an available provider",
   "main": "src/index.js",
   "scripts": {

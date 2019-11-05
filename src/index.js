@@ -19,9 +19,15 @@ async function loadLibrary (id, url) {
         script.defer = false
         script.src = url
         document.head.appendChild(script)
-        script.onload = () => {
-          console.log('Loaded Library: ' + script.src)
-          resolve(true)
+        try {
+          script.onload = () => {
+            console.log('Loaded Library: ' + script.src)
+            resolve(true)
+          }
+        } catch (error) {
+          // if onload crash, give a chance to retry
+          document.head.removeChild(script)
+          reject(error)
         }
       } else {
         resolve(true)
