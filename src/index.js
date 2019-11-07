@@ -8,7 +8,7 @@ const tryWindow = require('./providers/window-ipfs')
 const tryApi = require('./providers/ipfs-http-api')
 const tryJsIpfs = require('./providers/js-ipfs')
 
-async function loadLibrary (id, url) {
+async function loadLibrary (id, url, sri) {
   return new Promise((resolve, reject) => {
     try {
       // Browser side
@@ -20,6 +20,9 @@ async function loadLibrary (id, url) {
           script.async = false
           script.defer = false
           script.src = url
+          if (sri) {
+            script.integrity = sri
+          }
           script.crossorigin = 'anonymous'
           root.document.head.appendChild(script)
           script.onload = () => {
@@ -80,7 +83,12 @@ async function getIpfs (opts) {
     if (IpfsApi === undefined) {
       if (root.IpfsHttpClient === undefined) {
         // https://github.com/ipfs/js-ipfs-http-client
-        await loadLibrary('IpfsHttpClientLibrary', 'https://unpkg.com/ipfs-http-client/dist/index.js')
+        // https://www.srihash.org/
+        await loadLibrary(
+          'IpfsHttpClientLibrary',
+          'https://unpkg.com/ipfs-http-client@39.0.2/dist/index.js',
+          'sha384-SbtgpGuHo4HmMg8ZeX2IrF1c4cDnmBTsW84gipxDCzeFhIZaisgrVQbn3WUQsd0e'
+        )
       }
       IpfsApi = root.IpfsHttpClient
     }
