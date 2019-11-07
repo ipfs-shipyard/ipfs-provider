@@ -48,7 +48,10 @@ async function getIpfs (opts) {
     tryWindow: true,
     tryApi: true,
     tryJsIpfs: false,
+    defaultApiUrl: 'https://unpkg.com/ipfs-http-client/dist/index.js',
     defaultApiAddress: '/ip4/127.0.0.1/tcp/5001',
+    apiUrl: null,
+    apiSri: null,
     apiAddress: null,
     jsIpfsOpts: {},
     ipfsConnectionTest: (ipfs) => {
@@ -77,17 +80,15 @@ async function getIpfs (opts) {
   }
 
   if (opts.tryApi) {
-    const { apiAddress, defaultApiAddress } = opts
+    const { apiUrl, defaultApiUrl, apiSri, apiAddress, defaultApiAddress } = opts
     const { location } = root
     var IpfsApi = root.IpfsApi
     if (IpfsApi === undefined) {
       if (root.IpfsHttpClient === undefined) {
-        // https://github.com/ipfs/js-ipfs-http-client
-        // https://www.srihash.org/
         await loadLibrary(
           'IpfsHttpClientLibrary',
-          'https://unpkg.com/ipfs-http-client@39.0.2/dist/index.js',
-          'sha384-SbtgpGuHo4HmMg8ZeX2IrF1c4cDnmBTsW84gipxDCzeFhIZaisgrVQbn3WUQsd0e'
+          (apiUrl !== null ? apiUrl : defaultApiUrl),
+          apiSri
         )
       }
       IpfsApi = root.IpfsHttpClient
