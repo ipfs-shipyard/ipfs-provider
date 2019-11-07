@@ -27,8 +27,8 @@ async function loadLibrary (id, url, sri) {
           script.onload = () => {
             resolve(true)
           }
-          script.onerror = (event) => {
-            reject(new Error(event))
+          script.onerror = () => {
+            reject(new Error('Unable to load library: ' + url))
           }
           root.document.head.appendChild(script)
         } else {
