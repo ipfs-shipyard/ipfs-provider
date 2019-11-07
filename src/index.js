@@ -9,6 +9,7 @@ const tryApi = require('./providers/ipfs-http-api')
 const tryJsIpfs = require('./providers/js-ipfs')
 
 async function loadLibrary (id, url, sri) {
+  const err = 'Unable to load: ' + url
   return new Promise((resolve, reject) => {
     try {
       // Browser side
@@ -26,21 +27,22 @@ async function loadLibrary (id, url, sri) {
           script.crossOrigin = 'anonymous'
           root.document.head.appendChild(script)
           script.onload = () => {
-            console.log('Loaded: ' + script.src)
+            console.log('Loaded: ' + url)
             resolve(true)
           }
           script.onerror = () => {
-            reject(new Error('Unable to load: ' + script.src))
+            root.document.head.removeChild(script)
+            reject(new Error(err))
           }
         } else {
           resolve(true)
         }
       // TODO: server side
       } else {
-        reject(new Error('Unable to load: ' + url))
+        reject(new Error(err))
       }
     } catch (error) {
-      reject(new Error('Unable to load: ' + url))
+      reject(new Error(err))
     }
   })
 }
