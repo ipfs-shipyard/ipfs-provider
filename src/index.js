@@ -24,13 +24,13 @@ async function loadLibrary (id, url, sri) {
             script.integrity = sri
           }
           script.crossOrigin = 'anonymous'
+          root.document.head.appendChild(script)
           script.onload = () => {
             resolve(true)
           }
           script.onerror = () => {
             reject(new Error('Unable to load library: ' + url))
           }
-          root.document.head.appendChild(script)
         } else {
           resolve(true)
         }
