@@ -23,7 +23,7 @@ async function loadLibrary (id, url, sri) {
           if (sri) {
             script.integrity = sri
           }
-          script.crossorigin = 'anonymous'
+          script.crossOrigin = 'anonymous'
           root.document.head.appendChild(script)
           script.onload = () => {
             console.log('Library loaded: ' + url)
