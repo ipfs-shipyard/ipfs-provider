@@ -8,58 +8,18 @@ const tryWindow = require('./providers/window-ipfs')
 const tryApi = require('./providers/ipfs-http-api')
 const tryJsIpfs = require('./providers/js-ipfs')
 
-async function loadLibrary (id, url, sri) {
-  const err = 'Unable to load: ' + url
-  return new Promise((resolve, reject) => {
-    try {
-      // Browser side
-      if (root.document !== undefined) {
-        if (root.document.getElementById(id) == null) {
-          const script = root.document.createElement('script')
-          script.type = 'text/javascript'
-          script.id = id
-          script.async = false
-          script.defer = false
-          script.src = url
-          if (sri) {
-            script.integrity = sri
-          }
-          script.crossOrigin = 'anonymous'
-          root.document.head.appendChild(script)
-          script.onload = () => {
-            console.log('Loaded: ' + url)
-            resolve(true)
-          }
-          script.onerror = () => {
-            root.document.head.removeChild(script)
-            reject(new Error(err))
-          }
-        } else {
-          resolve(true)
-        }
-      // TODO: server side
-      } else {
-        reject(new Error(err))
-      }
-    } catch (error) {
-      reject(new Error(err))
-    }
-  })
-}
-
 async function getIpfs (opts) {
   const defaultOpts = {
     tryWebExt: true,
     tryWindow: true,
+    permissions: {},
     tryApi: true,
-    tryJsIpfs: false,
     apiIpfsOpts: {
-      defaultApiUrl: 'https://unpkg.com/ipfs-http-client/dist/index.js',
       defaultApiAddress: '/ip4/127.0.0.1/tcp/5001',
       apiAddress: null,
-      apiUrl: null,
-      apiSri: null
+      IpfsApi: null
     },
+    tryJsIpfs: false,
     jsIpfsOpts: {},
     ipfsConnectionTest: (ipfs) => {
       // ipfs connection is working if can we fetch the empty directtory.
@@ -72,7 +32,9 @@ async function getIpfs (opts) {
   }
 
   opts = Object.assign({}, defaultOpts, opts)
+  opts.permissions = Object.assign({}, defaultOpts.permissions, opts.permissions)
   opts.apiIpfsOpts = Object.assign({}, defaultOpts.apiIpfsOpts, opts.apiIpfsOpts)
+  opts.jsIpfsOpts = Object.assign({}, defaultOpts.jsIpfsOpts, opts.jsIpfsOpts)
 
   const { ipfsConnectionTest } = opts
 
@@ -90,19 +52,9 @@ async function getIpfs (opts) {
   if (opts.tryApi) {
     const { apiIpfsOpts } = opts
     const { location } = root
-    var IpfsApi = root.IpfsApi
-    if (IpfsApi === undefined) {
-      if (root.IpfsHttpClient === undefined) {
-        await loadLibrary(
-          'IpfsHttpClientLibrary',
-          (apiIpfsOpts.apiUrl !== null ? apiIpfsOpts.apiUrl : apiIpfsOpts.defaultApiUrl),
-          apiIpfsOpts.apiSri
-        )
-      }
-      IpfsApi = root.IpfsHttpClient
-    }
     const apiAddress = apiIpfsOpts.apiAddress
     const defaultApiAddress = apiIpfsOpts.defaultApiAddress
+    const IpfsApi = apiIpfsOpts.IpfsApi
     const res = await tryApi({ apiAddress, defaultApiAddress, location, IpfsApi, ipfsConnectionTest })
     if (res) return res
   }
