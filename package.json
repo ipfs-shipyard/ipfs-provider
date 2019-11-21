@@ -22,13 +22,13 @@
   },
   "homepage": "https://github.com/ipfs-shipyard/ipfs-provider#readme",
   "dependencies": {
-    "ipfs-http-client": "^32.0.1",
-    "multiaddr": "^6.0.6",
+    "ipfs-http-client": "^39.0.2",
+    "multiaddr": "^7.2.1",
     "uri-to-multiaddr": "^3.0.1",
     "window-or-global": "^1.0.1"
   },
   "devDependencies": {
-    "jest": "^24.8.0",
-    "standard": "^12.0.1"
+    "jest": "^24.9.0",
+    "standard": "^14.3.1"
   }
 }
