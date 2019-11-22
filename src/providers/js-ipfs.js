@@ -12,10 +12,10 @@ function promiseMeJsIpfs (Ipfs, opts) {
   })
 }
 
-async function tryJsIpfs ({ ipfsConnectionTest, getJsIpfs, jsIpfsOpts, initJsIpfs = promiseMeJsIpfs }) {
-  const Ipfs = await getJsIpfs()
-  const ipfs = await initJsIpfs(Ipfs, jsIpfsOpts)
-  await ipfsConnectionTest(ipfs)
+async function tryJsIpfs ({ connectionTest, getConstructor, options, init = promiseMeJsIpfs }) {
+  const Ipfs = await getConstructor()
+  const ipfs = await init(Ipfs, options)
+  await connectionTest(ipfs)
   return { ipfs, provider: PROVIDERS.jsipfs }
 }
 

@@ -7,10 +7,10 @@ const PROVIDERS = require('../constants/providers')
 // 1. Try user specified API address
 // 2. Try current origin
 // 3. Try default origin
-async function tryApi ({ IpfsApi, apiAddress, defaultApiAddress, location, ipfsConnectionTest }) {
+async function tryHttpClient ({ httpClient, apiAddress, defaultApiAddress, location, connectionTest }) {
   // Explicit custom apiAddress provided. Only try that.
   if (apiAddress) {
-    return maybeApi({ apiAddress, ipfsConnectionTest, IpfsApi })
+    return maybeApi({ apiAddress, connectionTest, httpClient })
   }
 
   // Current origin is not localhost:5001 so try with current origin info
@@ -29,26 +29,26 @@ async function tryApi ({ IpfsApi, apiAddress, defaultApiAddress, location, ipfsC
         apiOpts: {
           protocol: location.protocol.slice(0, -1)
         },
-        ipfsConnectionTest,
-        IpfsApi
+        connectionTest,
+        httpClient
       })
       if (res) return res
     }
   }
 
   // ...otherwise try /ip4/127.0.0.1/tcp/5001
-  return maybeApi({ apiAddress: defaultApiAddress, ipfsConnectionTest, IpfsApi })
+  return maybeApi({ apiAddress: defaultApiAddress, connectionTest, httpClient })
 }
 
 // Helper to construct and test an api client. Returns an js-ipfs-api instance or null
-async function maybeApi ({ apiAddress, ipfsConnectionTest, IpfsApi }) {
+async function maybeApi ({ apiAddress, connectionTest, httpClient }) {
   try {
-    const ipfs = new IpfsApi(apiAddress)
-    await ipfsConnectionTest(ipfs)
+    const ipfs = httpClient(apiAddress)
+    await connectionTest(ipfs)
     return { ipfs, provider: PROVIDERS.api, apiAddress }
   } catch (error) {
     // Failed to connect to ipfs-api in `apiAddress`
   }
 }
 
-module.exports = tryApi
+module.exports = tryHttpClient

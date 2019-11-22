@@ -3,23 +3,20 @@
 
 const tryWebExt = require('../src/providers/webext.js')
 const tryWindow = require('../src/providers/window-ipfs.js')
-const tryApi = require('../src/providers/ipfs-http-api.js')
+const tryHttpClient = require('../src/providers/http-client.js')
 const tryJsIpfs = require('../src/providers/js-ipfs.js')
 const PROVIDERS = require('../src/constants/providers.js')
-const getIpfs = require('../src/index.js')
+const { getIpfs, providers } = require('../src/index.js')
 
 jest.mock('../src/providers/webext.js')
 jest.mock('../src/providers/window-ipfs.js')
-jest.mock('../src/providers/ipfs-http-api.js')
+jest.mock('../src/providers/http-client.js')
 jest.mock('../src/providers/js-ipfs.js')
 
 describe('getIpfs via availabe providers', () => {
   it('should try nothing and fail if all providers are disabled', async () => {
     const res = await getIpfs({
-      tryWebExt: false,
-      tryWindow: false,
-      tryApi: false,
-      tryJsIpfs: false
+      providers: []
     })
     expect(res).toBeFalsy()
   })
@@ -46,7 +43,7 @@ describe('getIpfs via availabe providers', () => {
     const mockResult = { ipfs: {}, provider: PROVIDERS.api }
     tryWebExt.mockResolvedValue(null)
     tryWindow.mockResolvedValue(null)
-    tryApi.mockResolvedValue(mockResult)
+    tryHttpClient.mockResolvedValue(mockResult)
     const { ipfs, provider } = await getIpfs()
     expect(ipfs).toBeTruthy()
     expect(provider).toBe(mockResult.provider)
@@ -56,11 +53,14 @@ describe('getIpfs via availabe providers', () => {
     const mockResult = { ipfs: {}, provider: PROVIDERS.jsipfs }
     tryWebExt.mockResolvedValue(null)
     tryWindow.mockResolvedValue(null)
-    tryApi.mockResolvedValue(null)
+    tryHttpClient.mockResolvedValue(null)
     tryJsIpfs.mockResolvedValue(mockResult)
     const { ipfs, provider } = await getIpfs({
-      tryJsIpfs: true,
-      getJsIpfs: jest.fn()
+      providers: [
+        providers.jsIpfs({
+          getConstructor: jest.fn()
+        })
+      ]
     })
     expect(ipfs).toBeTruthy()
     expect(provider).toBe(mockResult.provider)

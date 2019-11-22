@@ -26,25 +26,25 @@ This is a port of the [ipfs-redux-bundle](https://github.com/ipfs-shipyard/ipfs-
 ## Usage
 
 ```js
-import getIpfs from 'ipfs-provider'
+const { getIpfs, providers } = require('ipfs-provider')
+const { webExt, windowIpfs, httpClient } = providers
 
 const { ipfs, provider } = await getIpfs({
   // These are the defaults:
-  tryWebExt: true,    // set false to bypass WebExtension verification
-  tryWindow: true,    // set false to bypass window.ipfs verification
-  permissions: {}     // set the window.ipfs options you want if tryWindow is true
-  tryApi: true,       // set false to bypass js-ipfs-http-client verification
-  apiAddress: null    // set this to use an api in that address if tryApi is true
-  tryJsIpfs: false,   // set true to attempt js-ipfs initialisation
-  getJsIpfs: null,    // must be set to a js-ipfs instance if tryJsIpfs is true
-  jsIpfsOpts: {}      // set the js-ipfs options you want if tryJsIpfs is true
+  providers: [
+    webExt(),
+    windowIpfs(),
+    httpClient()
+  ]
 })
 ```
 
 - `ipfs` is the running IPFS instance.
 - `provider` is a string representing the chosen provider, either: `WEBEXT`, `WINDOW_IPFS`, `IPFS_HTTP_API` or `JS_IPFS`.
 
-### Enable js-ipfs
+## Change order or use js-ipfs
+
+To customize the order or use js-ipfs, you should pass 
 
 To enable `js-ipfs`, pass the following options:
 
