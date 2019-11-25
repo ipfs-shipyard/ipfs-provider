@@ -21,11 +21,15 @@ describe('getIpfs via availabe providers', () => {
     expect(res).toBeFalsy()
   })
 
-  it('should try webext first', async () => {
+  it('should try webext only', async () => {
     const mockResult = { ipfs: {}, provider: PROVIDERS.webext }
     tryWebExt.mockResolvedValue(mockResult)
     tryWindow.mockResolvedValue({ ipfs: {}, provider: 'nope' })
-    const { ipfs, provider } = await getIpfs()
+    const { ipfs, provider } = await getIpfs({
+      providers: [
+        providers.webExt()
+      ]
+    })
     expect(ipfs).toBeTruthy()
     expect(provider).toBe(mockResult.provider)
   })

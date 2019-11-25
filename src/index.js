@@ -55,7 +55,6 @@ const providers = {
 }
 
 const defaultProviders = [
-  providers.webExt(),
   providers.windowIpfs(),
   providers.httpClient()
 ]
