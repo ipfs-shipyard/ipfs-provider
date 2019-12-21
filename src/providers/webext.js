@@ -2,7 +2,7 @@
 
 const PROVIDERS = require('../constants/providers')
 
-async function tryWebExt ({ root, ipfsConnectionTest }) {
+async function tryWebExt ({ root, connectionTest }) {
   // Opportunistic optimizations when running inside of web extension (eg. ipfs-companion)
   if (typeof root.chrome === 'object' && root.chrome.extension && root.chrome.extension.getBackgroundPage) {
     // Note: under some vendors getBackgroundPage() will return null if window is in incognito mode
@@ -18,7 +18,7 @@ async function tryWebExt ({ root, ipfsConnectionTest }) {
     // use it directly for the best performance
     if (webExt && webExt.ipfsCompanion && webExt.ipfsCompanion.ipfs) {
       const ipfs = webExt.ipfsCompanion.ipfs
-      await ipfsConnectionTest(ipfs)
+      await connectionTest(ipfs)
       return { ipfs, provider: PROVIDERS.webext }
     }
     /*  Other endpoints can be added here in the future.

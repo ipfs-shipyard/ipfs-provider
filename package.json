@@ -23,6 +23,7 @@
   "homepage": "https://github.com/ipfs-shipyard/ipfs-provider#readme",
   "dependencies": {
     "ipfs-http-client": "^32.0.1",
+    "merge-options": "^2.0.0",
     "multiaddr": "^6.0.6",
     "uri-to-multiaddr": "^3.0.1",
     "window-or-global": "^1.0.1"
