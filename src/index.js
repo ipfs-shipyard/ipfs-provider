@@ -89,5 +89,6 @@ function isMultiaddress (addr) {
 
 module.exports = {
   getIpfs,
-  providers
+  providers,
+  makeProvider
 }

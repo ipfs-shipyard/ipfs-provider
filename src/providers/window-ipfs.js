@@ -9,7 +9,7 @@ async function tryWindow ({ root, permissions, connectionTest }) {
       ? await root.ipfs.enable(permissions)
       : root.ipfs
     await connectionTest(ipfs)
-    return { ipfs, provider: PROVIDERS.window }
+    return { ipfs, provider: PROVIDERS.windowIpfs }
   }
 }
 
