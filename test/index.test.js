@@ -22,7 +22,7 @@ describe('getIpfs via availabe providers', () => {
   })
 
   it('should try webext only', async () => {
-    const mockResult = { ipfs: {}, provider: PROVIDERS.webext }
+    const mockResult = { ipfs: {}, provider: PROVIDERS.webExt }
     tryWebExt.mockResolvedValue(mockResult)
     tryWindow.mockResolvedValue({ ipfs: {}, provider: 'nope' })
     const { ipfs, provider } = await getIpfs({
@@ -35,7 +35,7 @@ describe('getIpfs via availabe providers', () => {
   })
 
   it('should try window.ipfs after webext', async () => {
-    const mockResult = { ipfs: {}, provider: PROVIDERS.window }
+    const mockResult = { ipfs: {}, provider: PROVIDERS.windowIpfs }
     tryWebExt.mockResolvedValue(null)
     tryWindow.mockResolvedValue(mockResult)
     const { ipfs, provider } = await getIpfs()
@@ -44,7 +44,7 @@ describe('getIpfs via availabe providers', () => {
   })
 
   it('should try ipfs-http-api after window.ipfs', async () => {
-    const mockResult = { ipfs: {}, provider: PROVIDERS.api }
+    const mockResult = { ipfs: {}, provider: PROVIDERS.httpClient }
     tryWebExt.mockResolvedValue(null)
     tryWindow.mockResolvedValue(null)
     tryHttpClient.mockResolvedValue(mockResult)
@@ -54,7 +54,7 @@ describe('getIpfs via availabe providers', () => {
   })
 
   it('should try js-ipfs if enabled', async () => {
-    const mockResult = { ipfs: {}, provider: PROVIDERS.jsipfs }
+    const mockResult = { ipfs: {}, provider: PROVIDERS.jsIpfs }
     tryWebExt.mockResolvedValue(null)
     tryWindow.mockResolvedValue(null)
     tryHttpClient.mockResolvedValue(null)
@@ -69,4 +69,25 @@ describe('getIpfs via availabe providers', () => {
     expect(ipfs).toBeTruthy()
     expect(provider).toBe(mockResult.provider)
   })
+  /* TODO: draft, need to improve this API
+  it('should work with custom providers', async () => {
+    const mockResult = { ipfs: {}, provider: 'customProvider' }
+    const customProvider = makeProvider(async ({ connectionTest }) => {
+      try {
+        const ipfs = // create IPFS API instance and confirm it works
+        return { ipfs, provider: 'customProvider' }
+      } catch(_) {
+        return null
+      }
+      return mockResult
+    })
+    const { ipfs, provider } = await getIpfs({
+      providers: [
+        customProvider()
+      ]
+    })
+    expect(ipfs).toBeTruthy()
+    expect(provider).toBe(mockResult.provider)
+  })
+  */
 })

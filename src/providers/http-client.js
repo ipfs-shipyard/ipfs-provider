@@ -45,7 +45,7 @@ async function maybeApi ({ apiAddress, connectionTest, httpClient }) {
   try {
     const ipfs = httpClient(apiAddress)
     await connectionTest(ipfs)
-    return { ipfs, provider: PROVIDERS.api, apiAddress }
+    return { ipfs, provider: PROVIDERS.httpClient, apiAddress }
   } catch (error) {
     // Failed to connect to ipfs-api in `apiAddress`
   }

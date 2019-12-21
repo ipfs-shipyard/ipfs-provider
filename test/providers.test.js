@@ -33,7 +33,7 @@ describe('provider: webext', () => {
     }
     const { ipfs, provider } = await tryWebExt({ root, connectionTest })
     expect(ipfs).toEqual(mockIpfs)
-    expect(provider).toEqual(PROVIDERS.webext)
+    expect(provider).toEqual(PROVIDERS.webExt)
   })
 })
 
@@ -47,7 +47,7 @@ describe('provider: window.ipfs', () => {
     }
     const { ipfs, provider } = await tryWindow(opts)
     expect(ipfs).toEqual('ok')
-    expect(provider).toEqual(PROVIDERS.window)
+    expect(provider).toEqual(PROVIDERS.windowIpfs)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
   })
   it('should use window.ipfs v2 (with permissions)', async () => {
@@ -60,7 +60,7 @@ describe('provider: window.ipfs', () => {
     }
     const { ipfs, provider } = await tryWindow(opts)
     expect(ipfs).toEqual(opts.permissions)
-    expect(provider).toEqual(PROVIDERS.window)
+    expect(provider).toEqual(PROVIDERS.windowIpfs)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
   })
   it('should fallback to window.ipfs v1', async () => {
@@ -72,7 +72,7 @@ describe('provider: window.ipfs', () => {
     }
     const { ipfs, provider } = await tryWindow(opts)
     expect(ipfs).toEqual(opts.root.ipfs)
-    expect(provider).toEqual(PROVIDERS.window)
+    expect(provider).toEqual(PROVIDERS.windowIpfs)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
   })
 })
@@ -88,7 +88,7 @@ describe('provider: ipfs-http-api', () => {
     }
     const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
     expect(apiAddress).toEqual(opts.apiAddress)
-    expect(provider).toEqual(PROVIDERS.api)
+    expect(provider).toEqual(PROVIDERS.httpClient)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
     const config = ipfs.getEndpointConfig()
     expect(config.host).toEqual('1.1.1.1')
@@ -106,7 +106,7 @@ describe('provider: ipfs-http-api', () => {
     }
     const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
     expect(apiAddress).toEqual(opts.apiAddress)
-    expect(provider).toEqual(PROVIDERS.api)
+    expect(provider).toEqual(PROVIDERS.httpClient)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
     const config = ipfs.getEndpointConfig()
     expect(config.host).toEqual('1.1.1.1')
@@ -123,7 +123,7 @@ describe('provider: ipfs-http-api', () => {
     }
     const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
     expect(apiAddress).toEqual('/dns4/dev.local/tcp/5001/http')
-    expect(provider).toEqual(PROVIDERS.api)
+    expect(provider).toEqual(PROVIDERS.httpClient)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
     const config = ipfs.getEndpointConfig()
     expect(config.host).toEqual('dev.local')
@@ -140,7 +140,7 @@ describe('provider: ipfs-http-api', () => {
     }
     const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
     expect(apiAddress).toEqual('/dns4/dev.local/tcp/5001/https')
-    expect(provider).toEqual(PROVIDERS.api)
+    expect(provider).toEqual(PROVIDERS.httpClient)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
     const config = ipfs.getEndpointConfig()
     expect(config.host).toEqual('dev.local')
@@ -157,7 +157,7 @@ describe('provider: ipfs-http-api', () => {
     }
     const { provider, apiAddress } = await tryHttpClient(opts)
     expect(apiAddress).toEqual('/dns4/localhost/tcp/9999/http')
-    expect(provider).toEqual(PROVIDERS.api)
+    expect(provider).toEqual(PROVIDERS.httpClient)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
     expect(opts.httpClient.mock.calls.length).toBe(1)
   })
@@ -174,7 +174,7 @@ describe('provider: ipfs-http-api', () => {
     }
     const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
     expect(apiAddress).toEqual(opts.defaultApiAddress)
-    expect(provider).toEqual(PROVIDERS.api)
+    expect(provider).toEqual(PROVIDERS.httpClient)
     expect(opts.connectionTest.mock.calls.length).toBe(2)
     const config = ipfs.getEndpointConfig()
     expect(config.host).toEqual('127.0.0.1')
@@ -194,7 +194,7 @@ describe('provider: js-ipfs', () => {
     }
     const { ipfs, provider } = await tryJsIpfs(opts)
     expect(ipfs).toEqual(mockIpfs)
-    expect(provider).toEqual(PROVIDERS.jsipfs)
+    expect(provider).toEqual(PROVIDERS.jsIpfs)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
     expect(opts.init.mock.calls.length).toBe(1)
   })

@@ -19,7 +19,7 @@ async function tryWebExt ({ root, connectionTest }) {
     if (webExt && webExt.ipfsCompanion && webExt.ipfsCompanion.ipfs) {
       const ipfs = webExt.ipfsCompanion.ipfs
       await connectionTest(ipfs)
-      return { ipfs, provider: PROVIDERS.webext }
+      return { ipfs, provider: PROVIDERS.webExt }
     }
     /*  Other endpoints can be added here in the future.
         For example, Companion could provide API for other browser extensions:

@@ -16,7 +16,7 @@ async function tryJsIpfs ({ connectionTest, getConstructor, options, init = prom
   const Ipfs = await getConstructor()
   const ipfs = await init(Ipfs, options)
   await connectionTest(ipfs)
-  return { ipfs, provider: PROVIDERS.jsipfs }
+  return { ipfs, provider: PROVIDERS.jsIpfs }
 }
 
 module.exports = tryJsIpfs

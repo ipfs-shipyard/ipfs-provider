@@ -1,8 +1,8 @@
 'use strict'
 
 module.exports = {
-  webext: 'WEBEXT',
-  window: 'WINDOW_IPFS',
-  api: 'IPFS_HTTP_API',
-  jsipfs: 'JS_IPFS'
+  httpClient: 'httpClient',
+  windowIpfs: 'windowIpfs',
+  jsIpfs: 'jsIpfs',
+  webExt: 'webExt'
 }
