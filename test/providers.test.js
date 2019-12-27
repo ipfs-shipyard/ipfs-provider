@@ -10,18 +10,17 @@ const tryJsIpfs = require('../src/providers/js-ipfs.js')
 const PROVIDERS = require('../src/constants/providers.js')
 
 describe('provider: webext', () => {
-  it('should connect to webext', async () => {
-    // chrome.extension.getBackgroundPage().ipfsCompanion.ipfs will be present
-    // only if page was loaded from a path that belongs to our browser extension
+  it('should connect to ipfs API exposed on extension background page ', async () => {
+    // chrome.extension.getBackgroundPage().ipfs will be present
+    // only if ipfs-provider code is executed on a page loaded from a path
+    // that belongs to a browser extension (assumes WebExtension Manifest v2)
     const mockIpfs = {}
     const root = {
       chrome: {
         extension: {
           getBackgroundPage () {
             return {
-              ipfsCompanion: {
-                ipfs: mockIpfs
-              }
+              ipfs: mockIpfs
             }
           }
         }
