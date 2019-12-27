@@ -1,0 +1,27 @@
+{
+  "name": "bundle-browserify",
+  "version": "1.0.0",
+  "description": "Bundle ipfs-provider with Browserify",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "bundle": "browserify src/index.js > public/bundle.js",
+    "serve": "http-server public -a 127.0.0.1 -p 8888 -c-1",
+    "start": "npm run bundle && npm run serve"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^16.2.3",
+    "concat-stream": "^2.0.0",
+    "execa": "^4.0.0",
+    "http-server": "~0.12.0",
+    "ipfs-provider": "file:../../"
+  },
+  "dependencies": {
+    "ipfs": "0.40.0"
+  },
+  "browser": {
+    "ipfs": "ipfs/dist"
+  }
+}
