@@ -49,19 +49,28 @@ describe('provider: window.ipfs', () => {
     expect(provider).toEqual(PROVIDERS.windowIpfs)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
   })
+
   it('should use window.ipfs v2 (with permissions)', async () => {
     const opts = {
       root: {
         ipfs: { enable: async (args) => args }
       },
       connectionTest: jest.fn().mockResolvedValueOnce(true),
-      permissions: Object.freeze({ foo: ['a', 'b', 'c'], bar: ['1', '2', '3'], buzz: false })
+      permissions: Object.freeze({ commands: ['add', 'cat'], bar: ['1', '2', '3'], buzz: false })
     }
     const { ipfs, provider } = await tryWindow(opts)
-    expect(ipfs).toEqual(opts.permissions)
     expect(provider).toEqual(PROVIDERS.windowIpfs)
+    // Note: in this test, the returned  'ipfs' is the effective 'opts' echoed back
+    const effectiveOpts = ipfs
+    // Caveat 2: windowIpfs provider adds implicit request for files.get
+    const expectedPermissions = opts.permissions.commands.concat(['files.get'])
+    expect(effectiveOpts.commands).toEqual(expect.arrayContaining(expectedPermissions))
+    // pass everything else as-is
+    expect(effectiveOpts.bar).toEqual(opts.permissions.bar)
+    expect(effectiveOpts.buzz).toEqual(opts.permissions.buzz)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
   })
+
   it('should fallback to window.ipfs v1', async () => {
     const opts = {
       root: {
