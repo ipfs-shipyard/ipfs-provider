@@ -4,8 +4,8 @@
   "description": "Connect to IPFS via an available provider",
   "main": "src/index.js",
   "scripts": {
-    "lint": "standard",
-    "test": "jest --verbose"
+    "lint": "standard ./src ./examples",
+    "test": "jest --verbose ./test"
   },
   "repository": {
     "type": "git",
@@ -24,8 +24,6 @@
   "dependencies": {
     "ipfs-http-client": "^40.1.0",
     "merge-options": "^2.0.0",
-    "multiaddr": "^7.2.1",
-    "uri-to-multiaddr": "^3.0.1",
     "window-or-global": "^1.0.1"
   },
   "devDependencies": {
