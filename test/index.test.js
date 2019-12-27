@@ -14,7 +14,7 @@ jest.mock('../src/providers/http-client.js')
 jest.mock('../src/providers/js-ipfs.js')
 
 describe('getIpfs via availabe providers', () => {
-  it('should return nothing if all providers are disabled', async () => {
+  it('should return nothing if none of providers works', async () => {
     const res = await getIpfs({
       providers: [
         providers.jsIpfs({
@@ -25,7 +25,7 @@ describe('getIpfs via availabe providers', () => {
     expect(res).toBeFalsy()
   })
 
-  it('should return nothing if none of providers works', async () => {
+  it('should return nothing if all providers are disabled', async () => {
     const res = await getIpfs({
       providers: []
     })
