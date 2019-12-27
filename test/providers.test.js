@@ -122,15 +122,15 @@ describe('provider: ipfs-http-api', () => {
     expect(config.protocol).toEqual('https')
   })
 
-  it('should use the http location where hostname not localhost', async () => {
+  it('should use the implicit http:// location where origin is on http', async () => {
     const opts = {
       defaultApiAddress: '/ip4/127.0.0.1/tcp/5001',
-      location: new URL('http://dev.local:5001'),
+      location: new URL('http://dev.local:5001/subdir/some-page.html'),
       httpClient,
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
     const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
-    expect(apiAddress).toEqual('/dns4/dev.local/tcp/5001/http')
+    expect(apiAddress).toEqual('http://dev.local:5001/')
     expect(provider).toEqual(PROVIDERS.httpClient)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
     const config = ipfs.getEndpointConfig()
@@ -139,15 +139,15 @@ describe('provider: ipfs-http-api', () => {
     expect(config.protocol).toEqual('http')
   })
 
-  it('should use the https location where hostname not localhost', async () => {
+  it('should use the implicit https:// location where origin is on https', async () => {
     const opts = {
       defaultApiAddress: '/ip4/127.0.0.1/tcp/5001',
-      location: new URL('https://dev.local:5001'),
+      location: new URL('https://dev.local:5001/subdir/some-page.html'),
       httpClient,
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
     const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
-    expect(apiAddress).toEqual('/dns4/dev.local/tcp/5001/https')
+    expect(apiAddress).toEqual('https://dev.local:5001/')
     expect(provider).toEqual(PROVIDERS.httpClient)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
     const config = ipfs.getEndpointConfig()
@@ -159,12 +159,12 @@ describe('provider: ipfs-http-api', () => {
   it('should use the location where port not 5001', async () => {
     const opts = {
       defaultApiAddress: '/ip4/127.0.0.1/tcp/5001',
-      location: new URL('http://localhost:9999'),
+      location: new URL('http://localhost:9999/subdir/some-page.html'),
       httpClient: jest.fn(),
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
     const { provider, apiAddress } = await tryHttpClient(opts)
-    expect(apiAddress).toEqual('/dns4/localhost/tcp/9999/http')
+    expect(apiAddress).toEqual('http://localhost:9999/')
     expect(provider).toEqual(PROVIDERS.httpClient)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
     expect(opts.httpClient.mock.calls.length).toBe(1)
