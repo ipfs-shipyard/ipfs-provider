@@ -61,8 +61,12 @@ const defaultProviders = [
 
 async function getIpfs ({ providers = defaultProviders, ...options } = {}) {
   for (const provider of providers) {
-    const res = await provider(options)
-    if (res) return res
+    try {
+      const res = await provider(options)
+      if (res) return res
+    } catch (_) {
+      // provider failed, move to the next one
+    }
   }
 }
 
