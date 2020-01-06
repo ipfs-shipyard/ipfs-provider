@@ -1,9 +1,7 @@
 'use strict'
 
-const root = require('window-or-global')
-const httpClient = require('ipfs-http-client')
+const root = require('./constants/root')
 const mergeOptions = require('merge-options')
-
 const tryWebExt = require('./providers/webext')
 const tryWindow = require('./providers/window-ipfs')
 const tryHttpClient = require('./providers/http-client')
@@ -27,11 +25,7 @@ const makeProvider = (fn, defaults = {}) => {
 
 const providers = {
   httpClient: makeProvider((options) => {
-    const { location } = root
-    return tryHttpClient({ httpClient, location, ...options })
-  }, {
-    defaultApiAddress: '/ip4/127.0.0.1/tcp/5001',
-    apiAddress: null
+    return tryHttpClient({ root, ...options })
   }),
   windowIpfs: makeProvider(options => {
     return tryWindow({ root, ...options })

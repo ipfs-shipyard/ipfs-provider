@@ -5,7 +5,7 @@
 [![Build Status](https://flat.badgen.net/travis/ipfs-shipyard/ipfs-provider)](https://travis-ci.com/ipfs-shipyard/ipfs-provider)
 [![Dependency Status](https://david-dm.org/ipfs-shipyard/ipfs-provider.svg?style=flat-square)](https://david-dm.org/ipfs-shipyard/ipfs-provider)
 
-> This module tries to connect to IPFS via multiple [providers](#providers).  
+> Returns IPFS API by trying multiple [providers](#providers) in a custom fallback order.  
 > It is a general-purpose replacement for [ipfs-redux-bundle](https://github.com/ipfs-shipyard/ipfs-redux-bundle).
 
 - [Install](#install)
@@ -85,21 +85,24 @@ Please keep in mind that all of these have defaults and you **do not** need to s
 
 ### `httpClient`
 
-Tries to connect to HTTP API via [`js-ipfs-http-client`](https://github.com/ipfs/js-ipfs-http-client) with either a user provided `apiAddress`, the current origin, or `defaultApiAddress`.
+Tries to connect to HTTP API via [`js-ipfs-http-client`](https://github.com/ipfs/js-ipfs-http-client).
+This provider will establish connection with `apiAddress`, the current origin, or the default local API address (`/ip4/127.0.0.1/tcp/5001`).
 
-Value provided in `apiAddress`  can be:
+The client library is initialized using constructor returned by `getConstructor` function or the one exposed at `window.IpfsHttpClient`.
+Supports lazy-loading and small bundle sizes.
+
+Value provided in `apiAddress` can be:
 - a multiaddr (string like `/ip4/127.0.0.1/tcp/5001` or an [object](https://github.com/multiformats/js-multiaddr/))
-- a String with an URL (`https://example.com:8080/`)
+- a String with an URL (`https://api.example.com:8080/`)
 - a configuration object supported by [`js-ipfs-http-client`](https://github.com/ipfs/js-ipfs-http-client#importing-the-module-and-usage)
-
+  (`{ host: '1.1.1.1', port: '80', apiPath: '/ipfs/api/v0' }`)
 
 ```js
 const { ipfs, provider } = await getIpfs({
   providers: [
     httpClient({
-      // defaults
-      defaultApiAddress: '/ip4/127.0.0.1/tcp/5001',
-      apiAddress: null
+      getConstructor: () => import('ipfs-http-client'),
+      apiAddress: 'https://api.example.com:8080/'
     })
   ]
 })
@@ -107,7 +110,6 @@ const { ipfs, provider } = await getIpfs({
 
 To try multiple endpoints, simply use this provider multiple times.  
 See [`examples/browser-browserify/src/index.js`](./examples/browser-browserify/src/index.js) for real world example.
-
 
 ### `jsIpfs`
 
@@ -118,7 +120,6 @@ in the context of the current page using customizable constructor:
 const { ipfs, provider } = await getIpfs({
   providers: [
     jsIpfs({
-      // defaults
       getConstructor: () => import('ipfs'),
       options: { /* advanced config */ }
     })
