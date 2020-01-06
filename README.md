@@ -88,7 +88,7 @@ Please keep in mind that all of these have defaults and you **do not** need to s
 Tries to connect to HTTP API via [`js-ipfs-http-client`](https://github.com/ipfs/js-ipfs-http-client).
 This provider will establish connection with `apiAddress`, the current origin, or the default local API address (`/ip4/127.0.0.1/tcp/5001`).
 
-The client library is initialized using constructor returned by `getConstructor` function or the one exposed at `window.IpfsHttpClient`.
+The client library is initialized using a constructor returned by `loadHttpClientModule` async function or one exposed at `window.IpfsHttpClient`.
 Supports lazy-loading and small bundle sizes.
 
 Value provided in `apiAddress` can be:
@@ -101,7 +101,7 @@ Value provided in `apiAddress` can be:
 const { ipfs, provider } = await getIpfs({
   providers: [
     httpClient({
-      getConstructor: () => import('ipfs-http-client'),
+      loadHttpClientModule: () => require('ipfs-http-client'),
       apiAddress: 'https://api.example.com:8080/'
     })
   ]
@@ -120,15 +120,17 @@ in the context of the current page using customizable constructor:
 const { ipfs, provider } = await getIpfs({
   providers: [
     jsIpfs({
-      getConstructor: () => import('ipfs'),
+      loadJsIpfsModule: () => require('ipfs'),
       options: { /* advanced config */ }
     })
   ]
 })
 ```
 
-- `getConstructor` should be a function that returns a promise that resolves with a `JsIpfs` constructor.  
+- `loadJsIpfsModule` should be a function that returns a promise that resolves with a [js-ipfs](https://github.com/ipfs/js-ipfs) constructor.
+   <!-- TODO confirm below is true, if it is, add example to examples/ and link to it
    This works well with [dynamic `import()`](https://developers.google.com/web/updates/2017/11/dynamic-import), so you can lazily load js-ipfs when it is needed.
+   -->
 - `options` should be an object which specifies [advanced configurations](https://github.com/ipfs/js-ipfs#ipfs-constructor) to the node.
 
 ### `windowIpfs`

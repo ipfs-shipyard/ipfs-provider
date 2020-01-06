@@ -48,8 +48,9 @@ async function getIpfs ({ providers = defaultProviders, ...options } = {}) {
     try {
       const res = await provider(options)
       if (res) return res
-    } catch (_) {
-      // provider failed, move to the next one
+    } catch (err) {
+      // provider failed unexpectedly, log error and move to the next one
+      console.error('[ipfs-provider]', err)
     }
   }
 }

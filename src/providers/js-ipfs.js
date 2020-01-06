@@ -12,8 +12,8 @@ function promiseMeJsIpfs (Ipfs, opts) {
   })
 }
 
-async function tryJsIpfs ({ connectionTest, getConstructor, options, init = promiseMeJsIpfs }) {
-  const Ipfs = await getConstructor()
+async function tryJsIpfs ({ connectionTest, loadJsIpfsModule, options, init = promiseMeJsIpfs }) {
+  const Ipfs = await loadJsIpfsModule()
   const ipfs = await init(Ipfs, options)
   await connectionTest(ipfs)
   return { ipfs, provider: PROVIDERS.jsIpfs }

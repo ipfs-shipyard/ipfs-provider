@@ -4,7 +4,10 @@ const { getIpfs, providers } = require('ipfs-provider')
 const { httpClient, jsIpfs, windowIpfs } = providers
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const { ipfs, provider } = await getIpfs({
+  const { ipfs, provider, apiAddress } = await getIpfs({
+    // HTTP client library can be defined globally to keep code minimal
+    // when httpClient provider is used multiple times
+    loadHttpClientModule: () => require('ipfs-http-client'),
     // try window.ipfs (if present),
     // then http apis (if up),
     // and finally fallback to spawning embedded js-ipfs
@@ -22,13 +25,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         apiAddress: 'http://dev.local:8080'
       }),
       jsIpfs({
-        getConstructor: () => require('ipfs'), // note: 'require' can be used instead of 'import'
+        // js-ipfs package is used here, so it is ok to inline it
+        loadJsIpfsModule: () => require('ipfs'), // note require instead of
         options: { } // pass config: https://github.com/ipfs/js-ipfs#ipfs-constructor
       })
     ]
   })
 
   console.log('IPFS API is provided by: ' + provider)
+  if (provider === 'httpClient') {
+    console.log('HTTP API address: ' + apiAddress)
+  }
 
   async function store () {
     const toStore = document.getElementById('source').value

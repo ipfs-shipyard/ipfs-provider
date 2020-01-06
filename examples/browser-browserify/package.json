@@ -19,7 +19,8 @@
     "ipfs-provider": "file:../../"
   },
   "dependencies": {
-    "ipfs": "0.40.0"
+    "ipfs": "0.40.0",
+    "ipfs-http-client": "40.1.0"
   },
   "browser": {
     "ipfs": "ipfs/dist"

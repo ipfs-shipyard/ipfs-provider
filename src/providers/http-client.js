@@ -8,7 +8,7 @@ const { DEFAULT_HTTP_API } = require('../constants/defaults')
  * so it is not included as a dependency if not used.
  *
  * HTTP Client init fallback:
- * 1. Use constructor returned by getConstructor function
+ * 1. Use constructor returned by loadHttpClientModule function
  * 2. Fallback to window.IpfsHttpClient
  *
  * API URL fallback order:
@@ -16,21 +16,21 @@ const { DEFAULT_HTTP_API } = require('../constants/defaults')
  * 2. Try current origin
  * 3. Try DEFAULT_HTTP_API
 */
-async function tryHttpClient ({ getConstructor, apiAddress, root, connectionTest }) {
+async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connectionTest }) {
   // Find HTTP client
   let httpClient
-  if (getConstructor) httpClient = await getConstructor()
+  if (loadHttpClientModule) httpClient = await loadHttpClientModule()
 
   // Final fllback to window.IpfsHttpClient or error
   if (!httpClient) {
     if (root.IpfsHttpClient) {
       httpClient = root.IpfsHttpClient
     } else {
-      throw new Error('ipfs-provider could not initialize js-ipfs-http-client: make sure its constructor is returned by getConstructor function or exposed at window.IpfsHttpClient')
+      throw new Error('ipfs-provider could not initialize js-ipfs-http-client: make sure its constructor is returned by loadHttpClientModule function or exposed at window.IpfsHttpClient')
     }
   }
 
-  // Allow the use of `import` or `require` on `getConstructor` fn
+  // Allow the use of `import` or `require` on `loadHttpClientModule` fn
   httpClient = httpClient.default || httpClient // TODO: create 'import' demo in examples/
 
   // Explicit custom apiAddress provided. Only try that.
@@ -64,6 +64,7 @@ async function maybeApi ({ apiAddress, connectionTest, httpClient }) {
     return { ipfs, provider: PROVIDERS.httpClient, apiAddress }
   } catch (error) {
     // Failed to connect to ipfs-api in `apiAddress`
+    // console.error('[ipfs-provider:httpClient]', error)
     return null
   }
 }

@@ -18,7 +18,7 @@ describe('getIpfs via availabe providers', () => {
     const res = await getIpfs({
       providers: [
         providers.jsIpfs({
-          getConstructor: () => { throw new Error('provider init failed') }
+          loadJsIpfsModule: () => { throw new Error('provider init failed') }
         })
       ]
     })
@@ -73,7 +73,7 @@ describe('getIpfs via availabe providers', () => {
     const { ipfs, provider } = await getIpfs({
       providers: [
         providers.jsIpfs({
-          getConstructor: jest.fn()
+          loadJsIpfsModule: jest.fn()
         })
       ]
     })

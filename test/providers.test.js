@@ -92,7 +92,7 @@ describe('provider: httpClient', () => {
       root: {
         location: new URL('http://localhost:5001')
       },
-      getConstructor: () => httpClient,
+      loadHttpClientModule: () => httpClient,
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
     const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
@@ -111,7 +111,7 @@ describe('provider: httpClient', () => {
       root: {
         location: new URL('http://localhost:5001')
       },
-      getConstructor: () => httpClient,
+      loadHttpClientModule: () => httpClient,
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
     const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
@@ -129,7 +129,7 @@ describe('provider: httpClient', () => {
       root: {
         location: new URL('http://dev.local:5001/subdir/some-page.html')
       },
-      getConstructor: () => httpClient,
+      loadHttpClientModule: () => httpClient,
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
     const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
@@ -147,7 +147,7 @@ describe('provider: httpClient', () => {
       root: {
         location: new URL('https://dev.local:5001/subdir/some-page.html')
       },
-      getConstructor: () => httpClient,
+      loadHttpClientModule: () => httpClient,
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
     const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
@@ -166,7 +166,7 @@ describe('provider: httpClient', () => {
       root: {
         location: new URL('http://localhost:9999/subdir/some-page.html')
       },
-      getConstructor: () => fakeHttpClient,
+      loadHttpClientModule: () => fakeHttpClient,
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
     const { provider, apiAddress } = await tryHttpClient(opts)
@@ -181,7 +181,7 @@ describe('provider: httpClient', () => {
       root: {
         location: new URL('http://astro.cat:5001')
       },
-      getConstructor: () => httpClient,
+      loadHttpClientModule: () => httpClient,
       // location call fails, default ok
       connectionTest: jest.fn()
         .mockRejectedValueOnce(new Error('nope'))
@@ -197,14 +197,14 @@ describe('provider: httpClient', () => {
     expect(config.protocol).toEqual('http:')
   })
 
-  it('should use window.IpfsHttpClient if present and no getConstructor is provided', async () => {
+  it('should use window.IpfsHttpClient if present and no loadHttpClientModule is provided', async () => {
     const opts = {
       apiAddress: '/ip4/1.2.3.4/tcp/1111/https',
       root: {
         IpfsHttpClient: httpClient,
         location: new URL('http://example.com')
       },
-      getConstructor: undefined, // (missing on purpose)
+      loadHttpClientModule: undefined, // (missing on purpose)
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
     const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
@@ -217,7 +217,7 @@ describe('provider: httpClient', () => {
     expect(config.protocol).toEqual('https')
   })
 
-  it('should prefer getConstructor over window.IpfsHttpClient', async () => {
+  it('should prefer loadHttpClientModule over window.IpfsHttpClient', async () => {
     const constructorHttpClient = jest.fn()
     const windowHttpClient = jest.fn()
     const opts = {
@@ -226,7 +226,7 @@ describe('provider: httpClient', () => {
         IpfsHttpClient: windowHttpClient,
         location: new URL('http://example.com')
       },
-      getConstructor: () => constructorHttpClient,
+      loadHttpClientModule: () => constructorHttpClient,
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
     const { apiAddress } = await tryHttpClient(opts)
@@ -235,17 +235,17 @@ describe('provider: httpClient', () => {
     expect(constructorHttpClient.mock.calls.length).toBe(1)
   })
 
-  it('should throw is no getConstructor nor window.IpfsHttpClient is provided', async () => {
+  it('should throw is no loadHttpClientModule nor window.IpfsHttpClient is provided', async () => {
     const opts = {
       apiAddress: '/ip4/1.2.3.4/tcp/1111/https',
       root: {
         IpfsHttpClient: undefined,
         location: new URL('http://example.com')
       },
-      getConstructor: undefined,
+      loadHttpClientModule: undefined,
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
-    const expectedError = new Error('ipfs-provider could not initialize js-ipfs-http-client: make sure its constructor is returned by getConstructor function or exposed at window.IpfsHttpClient')
+    const expectedError = new Error('ipfs-provider could not initialize js-ipfs-http-client: make sure its constructor is returned by loadHttpClientModule function or exposed at window.IpfsHttpClient')
     expect(tryHttpClient(opts)).rejects.toEqual(expectedError)
   })
 })
@@ -255,7 +255,7 @@ describe('provider: js-ipfs', () => {
     const mockIpfs = {}
     const opts = {
       connectionTest: jest.fn().mockResolvedValueOnce(true),
-      getConstructor: jest.fn().mockResolvedValueOnce(true),
+      loadJsIpfsModule: jest.fn().mockResolvedValueOnce(true),
       options: {},
       init: jest.fn().mockResolvedValue(mockIpfs)
     }
