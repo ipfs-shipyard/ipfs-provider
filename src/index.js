@@ -1,7 +1,6 @@
 'use strict'
 
 const root = require('window-or-global')
-const multiaddr = require('multiaddr')
 const httpClient = require('ipfs-http-client')
 const mergeOptions = require('merge-options')
 
@@ -29,15 +28,6 @@ const makeProvider = (fn, defaults = {}) => {
 const providers = {
   httpClient: makeProvider((options) => {
     const { location } = root
-
-    if (options.apiAddress) {
-      options.apiAddress = validateProvidedApiAddress(options.apiAddress)
-    }
-
-    if (options.defaultApiAddress) {
-      options.defaultApiAddress = validateProvidedApiAddress(options.defaultApiAddress)
-    }
-
     return tryHttpClient({ httpClient, location, ...options })
   }, {
     defaultApiAddress: '/ip4/127.0.0.1/tcp/5001',
@@ -61,29 +51,12 @@ const defaultProviders = [
 
 async function getIpfs ({ providers = defaultProviders, ...options } = {}) {
   for (const provider of providers) {
-    const res = await provider(options)
-    if (res) return res
-  }
-}
-
-function validateProvidedApiAddress (address) {
-  if (address && !isMultiaddress(address)) {
-    // `address` is not a valid multiaddr
-    return null
-  }
-  return address
-}
-
-function isMultiaddress (addr) {
-  if (addr === null || addr === undefined || typeof addr === 'undefined') {
-    return false
-  }
-
-  try {
-    multiaddr(addr)
-    return true
-  } catch (_) {
-    return false
+    try {
+      const res = await provider(options)
+      if (res) return res
+    } catch (_) {
+      // provider failed, move to the next one
+    }
   }
 }
 

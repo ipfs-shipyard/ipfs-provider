@@ -1,12 +1,10 @@
 'use strict'
 
-const toMultiaddr = require('uri-to-multiaddr')
-
 const PROVIDERS = require('../constants/providers')
 
 // 1. Try user specified API address
 // 2. Try current origin
-// 3. Try default origin
+// 3. Try multiaddr from defaultApiAddress
 async function tryHttpClient ({ httpClient, apiAddress, defaultApiAddress, location, connectionTest }) {
   // Explicit custom apiAddress provided. Only try that.
   if (apiAddress) {
@@ -14,26 +12,15 @@ async function tryHttpClient ({ httpClient, apiAddress, defaultApiAddress, locat
   }
 
   // Current origin is not localhost:5001 so try with current origin info
-  if (location && (location.port !== '5001' || !location.hostname.match(/^127.0.0.1$|^localhost$/))) {
-    let originAddress = null
-
-    try {
-      originAddress = toMultiaddr(location.origin).toString()
-    } catch (err) {
-      // Failed to convert `location.origin` to a multiaddr
-    }
-
-    if (originAddress) {
-      const res = await maybeApi({
-        apiAddress: originAddress,
-        apiOpts: {
-          protocol: location.protocol.slice(0, -1)
-        },
-        connectionTest,
-        httpClient
-      })
-      if (res) return res
-    }
+  if (location && !(location.port === '5001' && location.hostname.match(/^127.0.0.1$|^localhost$/))) {
+    const origin = new URL(location.origin)
+    origin.pathname = '/'
+    const res = await maybeApi({
+      apiAddress: origin.toString(),
+      connectionTest,
+      httpClient
+    })
+    if (res) return res
   }
 
   // ...otherwise try /ip4/127.0.0.1/tcp/5001

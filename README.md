@@ -10,6 +10,7 @@
 
 - [Install](#install)
 - [Usage](#usage)
+- [Examples](#examples)
 - [Providers](#providers)
   - [`httpClient`](#httpclient)
   - [`jsIpfs`](#jsipfs)
@@ -43,6 +44,11 @@ const { ipfs, provider } = await getIpfs({
 - `ipfs` – returned IPFS API instance
 - `provider` – a string with a name of the first successful provider.  
    - built-in names match constants from `providers`: `httpClient`, `jsIpfs`, `windowIpfs` and `webExt`.
+
+
+## Examples
+
+See [`examples/`](./examples) for sample code and demonstration of advanced fallback strategies.
 
 ## Providers
 
@@ -79,7 +85,13 @@ Please keep in mind that all of these have defaults and you **do not** need to s
 
 ### `httpClient`
 
-Tries to connect to HTTP API via [`js-ipfs-http-client`](https://github.com/ipfs/js-ipfs-http-client) with either a user provided `apiAddress`, the current origin, or the default address (`/ip4/127.0.0.1/tcp/5001`).
+Tries to connect to HTTP API via [`js-ipfs-http-client`](https://github.com/ipfs/js-ipfs-http-client) with either a user provided `apiAddress`, the current origin, or `defaultApiAddress`.
+
+Value provided in `apiAddress`  can be:
+- a multiaddr (string like `/ip4/127.0.0.1/tcp/5001` or an [object](https://github.com/multiformats/js-multiaddr/))
+- a String with an URL (`https://example.com:8080/`)
+- a configuration object supported by [`js-ipfs-http-client`](https://github.com/ipfs/js-ipfs-http-client#importing-the-module-and-usage)
+
 
 ```js
 const { ipfs, provider } = await getIpfs({
@@ -92,6 +104,10 @@ const { ipfs, provider } = await getIpfs({
   ]
 })
 ```
+
+To try multiple endpoints, simply use this provider multiple times.  
+See [`examples/browser-browserify/src/index.js`](./examples/browser-browserify/src/index.js) for real world example.
+
 
 ### `jsIpfs`
 

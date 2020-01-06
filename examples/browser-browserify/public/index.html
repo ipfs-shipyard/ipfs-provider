@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <title>ipfs-provider example</title>
+    <script src="bundle.js"></script>
+    <style>
+      .content {
+        border: 1px solid #c0c0c0;
+        padding: 1em;
+        margin: .5em 0;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Add data to IPFS from the browser via API found by ipfs-provider</h2>
+    <textarea id="source" placeholder="Enter some text here"></textarea>
+    <button id="store">Add text</button>
+    <div id="output" style="display: none">
+      <p>CID and text read back from IPFS:</p>
+      <div class="content" id="hash">[ipfs hash]</div>
+      <div class="content" id="content">[ipfs content]</div>
+    </div>
+  </body>
+</html>

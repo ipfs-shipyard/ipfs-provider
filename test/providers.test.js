@@ -49,19 +49,28 @@ describe('provider: window.ipfs', () => {
     expect(provider).toEqual(PROVIDERS.windowIpfs)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
   })
+
   it('should use window.ipfs v2 (with permissions)', async () => {
     const opts = {
       root: {
         ipfs: { enable: async (args) => args }
       },
       connectionTest: jest.fn().mockResolvedValueOnce(true),
-      permissions: Object.freeze({ foo: ['a', 'b', 'c'], bar: ['1', '2', '3'], buzz: false })
+      permissions: Object.freeze({ commands: ['add', 'cat'], bar: ['1', '2', '3'], buzz: false })
     }
     const { ipfs, provider } = await tryWindow(opts)
-    expect(ipfs).toEqual(opts.permissions)
     expect(provider).toEqual(PROVIDERS.windowIpfs)
+    // Note: in this test, the returned  'ipfs' is the effective 'opts' echoed back
+    const effectiveOpts = ipfs
+    // Caveat 2: windowIpfs provider adds implicit request for files.get
+    const expectedPermissions = opts.permissions.commands.concat(['files.get'])
+    expect(effectiveOpts.commands).toEqual(expect.arrayContaining(expectedPermissions))
+    // pass everything else as-is
+    expect(effectiveOpts.bar).toEqual(opts.permissions.bar)
+    expect(effectiveOpts.buzz).toEqual(opts.permissions.buzz)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
   })
+
   it('should fallback to window.ipfs v1', async () => {
     const opts = {
       root: {
@@ -113,15 +122,15 @@ describe('provider: ipfs-http-api', () => {
     expect(config.protocol).toEqual('https')
   })
 
-  it('should use the http location where hostname not localhost', async () => {
+  it('should use the implicit http:// location where origin is on http', async () => {
     const opts = {
       defaultApiAddress: '/ip4/127.0.0.1/tcp/5001',
-      location: new URL('http://dev.local:5001'),
+      location: new URL('http://dev.local:5001/subdir/some-page.html'),
       httpClient,
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
     const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
-    expect(apiAddress).toEqual('/dns4/dev.local/tcp/5001/http')
+    expect(apiAddress).toEqual('http://dev.local:5001/')
     expect(provider).toEqual(PROVIDERS.httpClient)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
     const config = ipfs.getEndpointConfig()
@@ -130,15 +139,15 @@ describe('provider: ipfs-http-api', () => {
     expect(config.protocol).toEqual('http')
   })
 
-  it('should use the https location where hostname not localhost', async () => {
+  it('should use the implicit https:// location where origin is on https', async () => {
     const opts = {
       defaultApiAddress: '/ip4/127.0.0.1/tcp/5001',
-      location: new URL('https://dev.local:5001'),
+      location: new URL('https://dev.local:5001/subdir/some-page.html'),
       httpClient,
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
     const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
-    expect(apiAddress).toEqual('/dns4/dev.local/tcp/5001/https')
+    expect(apiAddress).toEqual('https://dev.local:5001/')
     expect(provider).toEqual(PROVIDERS.httpClient)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
     const config = ipfs.getEndpointConfig()
@@ -150,12 +159,12 @@ describe('provider: ipfs-http-api', () => {
   it('should use the location where port not 5001', async () => {
     const opts = {
       defaultApiAddress: '/ip4/127.0.0.1/tcp/5001',
-      location: new URL('http://localhost:9999'),
+      location: new URL('http://localhost:9999/subdir/some-page.html'),
       httpClient: jest.fn(),
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
     const { provider, apiAddress } = await tryHttpClient(opts)
-    expect(apiAddress).toEqual('/dns4/localhost/tcp/9999/http')
+    expect(apiAddress).toEqual('http://localhost:9999/')
     expect(provider).toEqual(PROVIDERS.httpClient)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
     expect(opts.httpClient.mock.calls.length).toBe(1)
