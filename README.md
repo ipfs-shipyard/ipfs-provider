@@ -1,5 +1,6 @@
 # ipfs-provider
 
+[![](https://img.shields.io/github/release/ipfs-shipyard/ipfs-provider.svg)](https://github.com/ipfs-shipyard/ipfs-provider/releases/latest)
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](https://protocol.ai)
 [![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
 [![Build Status](https://flat.badgen.net/travis/ipfs-shipyard/ipfs-provider)](https://travis-ci.com/ipfs-shipyard/ipfs-provider)
