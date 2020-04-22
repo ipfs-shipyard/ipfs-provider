@@ -9,9 +9,9 @@
   ],
   "scripts": {
     "lint": "aegir lint",
-    "release": "aegir release",
-    "release-minor": "aegir release --type minor",
-    "release-major": "aegir release --type major",
+    "release": "npm test && aegir release --test false",
+    "release-minor": "npm test && aegir release --type minor --test false",
+    "release-major": "npm test && aegir release --type major --test false",
     "build": "aegir build",
     "lint:fix": "standard --fix ./src/**.js ./test/**.js ./examples/**.js",
     "test": "jest --verbose ./test"
