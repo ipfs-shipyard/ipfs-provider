@@ -1,5 +1,6 @@
 'use strict'
 
+const { URL } = require('iso-url')
 const PROVIDERS = require('../constants/providers')
 const { DEFAULT_HTTP_API } = require('../constants/defaults')
 
@@ -21,7 +22,7 @@ async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connecti
   let httpClient
   if (loadHttpClientModule) httpClient = await loadHttpClientModule()
 
-  // Final fllback to window.IpfsHttpClient or error
+  // Final fallback to window.IpfsHttpClient or error
   if (!httpClient) {
     if (root.IpfsHttpClient) {
       httpClient = root.IpfsHttpClient

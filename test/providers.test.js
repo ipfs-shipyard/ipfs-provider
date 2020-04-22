@@ -2,6 +2,7 @@
 /* global jest, describe, it, expect */
 
 const httpClient = require('ipfs-http-client')
+const { URL } = require('iso-url')
 
 const tryWebExt = require('../src/providers/webext.js')
 const tryWindow = require('../src/providers/window-ipfs.js')
@@ -214,7 +215,7 @@ describe('provider: httpClient', () => {
     const config = ipfs.getEndpointConfig()
     expect(config.host).toEqual('1.2.3.4')
     expect(config.port).toEqual('1111')
-    expect(config.protocol).toEqual('https')
+    expect(config.protocol).toEqual('https:')
   })
 
   it('should prefer loadHttpClientModule over window.IpfsHttpClient', async () => {

@@ -15,11 +15,12 @@
   </head>
   <body>
     <h2>Add data to IPFS from the browser via API found by ipfs-provider</h2>
+    <p>(open the Console to see what is happening)</p>
     <textarea id="source" placeholder="Enter some text here"></textarea>
     <button id="store">Add text</button>
     <div id="output" style="display: none">
-      <p>CID and text read back from IPFS:</p>
-      <div class="content" id="hash">[ipfs hash]</div>
+      <p>CID and the text read back from IPFS:</p>
+      <div class="content" id="cid">[ipfs cid]</div>
       <div class="content" id="content">[ipfs content]</div>
     </div>
   </body>

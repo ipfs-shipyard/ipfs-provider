@@ -8,9 +8,12 @@ const tryHttpClient = require('./providers/http-client')
 const tryJsIpfs = require('./providers/js-ipfs')
 
 const defaultGlobalOpts = {
-  connectionTest: (ipfs) => {
-    // ipfs connection is working if can we fetch the empty directtory.
-    return ipfs.get('QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn')
+  connectionTest: async (ipfs) => {
+    // ipfs connection is working if we can fetch data via async iterator API
+    const cid = 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn'
+    for await (const file of ipfs.get(cid)) {
+      return file.type === 'dir' && file.name === cid
+    }
   }
 }
 
