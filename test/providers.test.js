@@ -41,7 +41,7 @@ describe('provider: window.ipfs', () => {
   it('should use window.ipfs v2 (no permissions)', async () => {
     const opts = {
       root: {
-        ipfs: { enable: async (args) => 'ok' }
+        ipfs: { enable: (args) => Promise.resolve('ok') }
       },
       connectionTest: jest.fn().mockResolvedValueOnce(true)
     }
@@ -54,7 +54,7 @@ describe('provider: window.ipfs', () => {
   it('should use window.ipfs v2 (with permissions)', async () => {
     const opts = {
       root: {
-        ipfs: { enable: async (args) => args }
+        ipfs: { enable: (args) => Promise.resolve(args) }
       },
       connectionTest: jest.fn().mockResolvedValueOnce(true),
       permissions: Object.freeze({ commands: ['add', 'cat'], bar: ['1', '2', '3'], buzz: false })
@@ -236,7 +236,7 @@ describe('provider: httpClient', () => {
     expect(constructorHttpClient.mock.calls.length).toBe(1)
   })
 
-  it('should throw is no loadHttpClientModule nor window.IpfsHttpClient is provided', async () => {
+  it('should throw is no loadHttpClientModule nor window.IpfsHttpClient is provided', () => {
     const opts = {
       apiAddress: '/ip4/1.2.3.4/tcp/1111/https',
       root: {

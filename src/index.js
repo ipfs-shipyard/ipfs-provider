@@ -53,7 +53,7 @@ async function getIpfs ({ providers = defaultProviders, ...options } = {}) {
       if (res) return res
     } catch (err) {
       // provider failed unexpectedly, log error and move to the next one
-      console.error('[ipfs-provider]', err)
+      console.error('[ipfs-provider]', err) // eslint-disable-line no-console
     }
   }
 }
