@@ -23,9 +23,35 @@
 
 ## Install
 
+### via NPM
+
 ```console
 $ npm install ipfs-provider
 ```
+
+### via prebuilt browser bundles
+
+```html
+<!-- remember to include js-ipfs and js-ipfs-http-client, if they are used -->
+<script src="https://cdn.jsdelivr.net/npm/ipfs/dist/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ipfs-http-client/dist/index.min.js"></script>
+
+<!-- prebuilt and minified bundle -->
+<script src="https://cdn.jsdelivr.net/npm/ipfs-provider/dist/index.min.js"></script>
+
+<script>
+  const { getIpfs, providers } = window.IpfsProvider
+  const { ipfs, provider, apiAddress } = await getIpfs({
+    loadHttpClientModule: () => window.IpfsHttpClient,
+    loadJsIpfsModule: () => window.Ipfs,
+    providers: [ /* see Usage below */ ]
+    })
+</script>
+```
+
+**Note:** when using prebuilt bundles in production use explicit versions and SRI hashes.
+Details [here](https://github.com/ipfs/js-ipfs/tree/master/packages/ipfs-http-client#in-a-web-browser).
+<!-- TODO: add prebuild+versions+sri example to ./examples -->
 
 ## Usage
 
