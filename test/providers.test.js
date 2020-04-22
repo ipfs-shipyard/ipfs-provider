@@ -101,7 +101,7 @@ describe('provider: ipfs-http-api', () => {
     const config = ipfs.getEndpointConfig()
     expect(config.host).toEqual('1.1.1.1')
     expect(config.port).toEqual('1111')
-    expect(config.protocol).toEqual('http')
+    expect(config.protocol).toEqual('http:')
   })
 
   it('should use the apiAddress (explicit https)', async () => {
@@ -119,7 +119,7 @@ describe('provider: ipfs-http-api', () => {
     const config = ipfs.getEndpointConfig()
     expect(config.host).toEqual('1.1.1.1')
     expect(config.port).toEqual('1111')
-    expect(config.protocol).toEqual('https')
+    expect(config.protocol).toEqual('https:')
   })
 
   it('should use the implicit http:// location where origin is on http', async () => {
@@ -136,7 +136,7 @@ describe('provider: ipfs-http-api', () => {
     const config = ipfs.getEndpointConfig()
     expect(config.host).toEqual('dev.local')
     expect(config.port).toEqual('5001')
-    expect(config.protocol).toEqual('http')
+    expect(config.protocol).toEqual('http:')
   })
 
   it('should use the implicit https:// location where origin is on https', async () => {
@@ -153,7 +153,7 @@ describe('provider: ipfs-http-api', () => {
     const config = ipfs.getEndpointConfig()
     expect(config.host).toEqual('dev.local')
     expect(config.port).toEqual('5001')
-    expect(config.protocol).toEqual('https')
+    expect(config.protocol).toEqual('https:')
   })
 
   it('should use the location where port not 5001', async () => {
@@ -187,7 +187,7 @@ describe('provider: ipfs-http-api', () => {
     const config = ipfs.getEndpointConfig()
     expect(config.host).toEqual('127.0.0.1')
     expect(config.port).toEqual('5001')
-    expect(config.protocol).toEqual('http')
+    expect(config.protocol).toEqual('http:')
   })
 })
 

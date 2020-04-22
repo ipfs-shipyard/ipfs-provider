@@ -22,12 +22,12 @@
   },
   "homepage": "https://github.com/ipfs-shipyard/ipfs-provider#readme",
   "dependencies": {
-    "ipfs-http-client": "^40.1.0",
+    "ipfs-http-client": "^44.0.0",
     "merge-options": "^2.0.0",
     "window-or-global": "^1.0.1"
   },
   "devDependencies": {
-    "jest": "^24.9.0",
-    "standard": "^14.3.1"
+    "jest": "^25.4.0",
+    "standard": "^14.3.3"
   }
 }
