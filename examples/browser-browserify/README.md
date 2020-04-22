@@ -27,4 +27,4 @@ Let's unpack what happened in the above example:
 2. 🔴 test request to local API (`/ip4/127.0.0.1/tcp/5001`) was blocked due to [CORS protection](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
 3. 🔴 `/api/v0/` on the same Origin as the page did not exist
 3. 🔴 explicitly defined remote API was offline (`http://dev.local:8080`)
-4. 💚 final fallback of spawning embedded [js-ipfs](https://github.com/ipfs/js-ipfs) was executed successfully 🚀✨
+4. 💚 final fallback worked: spawning embedded [js-ipfs](https://github.com/ipfs/js-ipfs/tree/master/packages/ipfs) was executed successfully 🚀✨

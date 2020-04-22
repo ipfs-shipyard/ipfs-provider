@@ -2,19 +2,15 @@
 
 const PROVIDERS = require('../constants/providers')
 
-function promiseMeJsIpfs (Ipfs, opts) {
+function createIpfs (ipfsModule, opts) {
   // Allow the use of `import` or `require` on `getJsIpfs` fn
-  Ipfs = Ipfs.default || Ipfs
-  return new Promise((resolve, reject) => {
-    const ipfs = new Ipfs(opts)
-    ipfs.once('ready', () => resolve(ipfs))
-    ipfs.once('error', err => reject(err))
-  })
+  ipfsModule = ipfsModule.default || ipfsModule
+  return ipfsModule.create(opts)
 }
 
-async function tryJsIpfs ({ connectionTest, getConstructor, options, init = promiseMeJsIpfs }) {
-  const Ipfs = await getConstructor()
-  const ipfs = await init(Ipfs, options)
+async function tryJsIpfs ({ connectionTest, loadJsIpfsModule, options, init = createIpfs }) {
+  const ipfsModule = await loadJsIpfsModule()
+  const ipfs = await init(ipfsModule, options)
   await connectionTest(ipfs)
   return { ipfs, provider: PROVIDERS.jsIpfs }
 }

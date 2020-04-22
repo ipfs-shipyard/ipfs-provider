@@ -14,5 +14,5 @@ Let us know if you find any issue or if you want to contribute and add an exampl
 
 ## See also
 
-- [`js-ipfs-http-client` examples](https://github.com/ipfs/js-ipfs-http-client/tree/master/examples)
+- [`js-ipfs-http-client` examples](https://github.com/ipfs/js-ipfs/tree/master/packages/ipfs-http-client/examples)
 - [`js-ipfs` examples and tutorials](https://github.com/ipfs/js-ipfs/tree/master/examples)

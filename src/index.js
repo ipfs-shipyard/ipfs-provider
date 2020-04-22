@@ -1,18 +1,19 @@
 'use strict'
 
-const root = require('window-or-global')
-const httpClient = require('ipfs-http-client')
+const root = require('./constants/root')
 const mergeOptions = require('merge-options')
-
 const tryWebExt = require('./providers/webext')
 const tryWindow = require('./providers/window-ipfs')
 const tryHttpClient = require('./providers/http-client')
 const tryJsIpfs = require('./providers/js-ipfs')
 
 const defaultGlobalOpts = {
-  connectionTest: (ipfs) => {
-    // ipfs connection is working if can we fetch the empty directtory.
-    return ipfs.get('QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn')
+  connectionTest: async (ipfs) => {
+    // ipfs connection is working if we can fetch data via async iterator API
+    const cid = 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn'
+    for await (const file of ipfs.get(cid)) {
+      return file.type === 'dir' && file.name === cid
+    }
   }
 }
 
@@ -27,11 +28,7 @@ const makeProvider = (fn, defaults = {}) => {
 
 const providers = {
   httpClient: makeProvider((options) => {
-    const { location } = root
-    return tryHttpClient({ httpClient, location, ...options })
-  }, {
-    defaultApiAddress: '/ip4/127.0.0.1/tcp/5001',
-    apiAddress: null
+    return tryHttpClient({ root, ...options })
   }),
   windowIpfs: makeProvider(options => {
     return tryWindow({ root, ...options })
@@ -54,8 +51,9 @@ async function getIpfs ({ providers = defaultProviders, ...options } = {}) {
     try {
       const res = await provider(options)
       if (res) return res
-    } catch (_) {
-      // provider failed, move to the next one
+    } catch (err) {
+      // provider failed unexpectedly, log error and move to the next one
+      console.error('[ipfs-provider]', err)
     }
   }
 }
