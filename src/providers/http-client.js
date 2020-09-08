@@ -5,7 +5,7 @@ const PROVIDERS = require('../constants/providers')
 const { DEFAULT_HTTP_API } = require('../constants/defaults')
 
 /*
- * This provider lazy-loads https://github.com/ipfs/js-ipfs-http-client
+ * This provider lazy-loads https://github.com/ipfs/js-ipfs/tree/master/packages/ipfs-http-client
  * so it is not included as a dependency if not used.
  *
  * HTTP Client init fallback:
@@ -34,7 +34,7 @@ async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connecti
   // Allow the use of `import` or `require` on `loadHttpClientModule` fn
   httpClient = httpClient.default || httpClient // TODO: create 'import' demo in examples/
 
-  // Explicit custom apiAddress provided. Only try that.
+  // If explicit custom apiAddress provided, only try that.
   if (apiAddress) {
     return maybeApi({ apiAddress, connectionTest, httpClient })
   }
@@ -56,11 +56,11 @@ async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connecti
   return maybeApi({ apiAddress: DEFAULT_HTTP_API, connectionTest, httpClient })
 }
 
-// Init and test an api client against provded API address.
+// Init and test an api client against provided API address.
 // Returns js-ipfs-http-client instance or null
 async function maybeApi ({ apiAddress, connectionTest, httpClient }) {
   try {
-    const ipfs = httpClient(apiAddress)
+    const ipfs = httpClient(copyIfObject(apiAddress))
     await connectionTest(ipfs)
     return { ipfs, provider: PROVIDERS.httpClient, apiAddress }
   } catch (error) {
@@ -68,6 +68,15 @@ async function maybeApi ({ apiAddress, connectionTest, httpClient }) {
     // console.error('[ipfs-provider:httpClient]', error)
     return null
   }
+}
+
+// Some versions of js-ipfs-http-client mutate the object passed instead of
+// URL/multiaddr string. This wrapper preserves the original config to ensure one can
+// compare objects returned apiAddress to tell which provider was successful
+const copyIfObject = (apiAddress) => {
+  return (typeof apiAddress === 'object')
+    ? JSON.parse(JSON.stringify(apiAddress))
+    : apiAddress
 }
 
 module.exports = tryHttpClient

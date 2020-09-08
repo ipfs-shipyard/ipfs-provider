@@ -32,13 +32,13 @@
   "homepage": "https://github.com/ipfs-shipyard/ipfs-provider#readme",
   "dependencies": {
     "iso-url": "~0.4.7",
-    "merge-options": "^2.0.0"
+    "merge-options": "^3.0.1"
   },
   "devDependencies": {
-    "aegir": "^21.10.1",
-    "ipfs-http-client": "^44.0.0",
-    "jest": "^25.4.0",
-    "standard": "^14.3.3"
+    "aegir": "^26.0.0",
+    "ipfs-http-client": "^46.1.1",
+    "jest": "^26.4.2",
+    "standard": "^14.3.4"
   },
   "contributors": [
     "Diogo Silva <fsdiogo@gmail.com>",
