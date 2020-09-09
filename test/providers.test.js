@@ -104,6 +104,7 @@ describe('provider: httpClient', () => {
     expect(config.host).toEqual('1.1.1.1')
     expect(config.port).toEqual('1111')
     expect(config.protocol).toEqual('http:')
+    expect(config.pathname).toEqual('/api/v0')
   })
 
   it('should use the apiAddress (explicit https)', async () => {
@@ -123,6 +124,36 @@ describe('provider: httpClient', () => {
     expect(config.host).toEqual('1.1.1.1')
     expect(config.port).toEqual('1111')
     expect(config.protocol).toEqual('https:')
+    expect(config.pathname).toEqual('/api/v0')
+  })
+
+  it('should use the apiAddress (config object with basic auth)', async () => {
+    const clientOpts = {
+      host: '1.1.1.3',
+      port: '1113',
+      protocol: 'https',
+      apiPath: 'some/custom/path/to/api/v0',
+      headers: {
+        authorization: 'Basic dXNlcjpwYXNz'
+      }
+    }
+    const opts = {
+      apiAddress: clientOpts,
+      root: {
+        location: new URL('http://localhost:5001')
+      },
+      loadHttpClientModule: () => httpClient,
+      connectionTest: jest.fn().mockResolvedValueOnce(true)
+    }
+    const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
+    expect(apiAddress).toEqual(clientOpts)
+    expect(provider).toEqual(PROVIDERS.httpClient)
+    expect(opts.connectionTest.mock.calls.length).toBe(1)
+    const config = ipfs.getEndpointConfig()
+    expect(config.host).toEqual('1.1.1.3')
+    expect(config.port).toEqual('1113')
+    expect(config.protocol).toEqual('https:')
+    expect(config.pathname).toEqual('/some/custom/path/to/api/v0')
   })
 
   it('should use the implicit http:// location where origin is on http', async () => {
@@ -141,6 +172,7 @@ describe('provider: httpClient', () => {
     expect(config.host).toEqual('dev.local')
     expect(config.port).toEqual('5001')
     expect(config.protocol).toEqual('http:')
+    expect(config.pathname).toEqual('/api/v0')
   })
 
   it('should use the implicit https:// location where origin is on https', async () => {
@@ -159,6 +191,7 @@ describe('provider: httpClient', () => {
     expect(config.host).toEqual('dev.local')
     expect(config.port).toEqual('5001')
     expect(config.protocol).toEqual('https:')
+    expect(config.pathname).toEqual('/api/v0')
   })
 
   it('should try API at window.location.origin', async () => {
@@ -196,6 +229,7 @@ describe('provider: httpClient', () => {
     expect(config.host).toEqual('127.0.0.1')
     expect(config.port).toEqual('5001')
     expect(config.protocol).toEqual('http:')
+    expect(config.pathname).toEqual('/api/v0')
   })
 
   it('should use window.IpfsHttpClient if present and no loadHttpClientModule is provided', async () => {
@@ -216,6 +250,7 @@ describe('provider: httpClient', () => {
     expect(config.host).toEqual('1.2.3.4')
     expect(config.port).toEqual('1111')
     expect(config.protocol).toEqual('https:')
+    expect(config.pathname).toEqual('/api/v0')
   })
 
   it('should prefer loadHttpClientModule over window.IpfsHttpClient', async () => {

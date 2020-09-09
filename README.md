@@ -14,10 +14,8 @@
 - [Usage](#usage)
 - [Examples](#examples)
 - [Providers](#providers)
-  - [`httpClient`](#httpclient)
-  - [`jsIpfs`](#jsipfs)
-  - [`windowIpfs`](#windowipfs)
-  - [`webExt`](#webext)
+  - [`httpClient`](#httpclient) (remote/local HTTP API)
+  - [`jsIpfs`](#jsipfs) (embedded js-ipfs node)
 <!-- TODO: improve this API  - [create our own!](#creating-a-provider) -->
 - [Test](#test)
 
@@ -58,7 +56,7 @@ Details [here](https://github.com/ipfs/js-ipfs/tree/master/packages/ipfs-http-cl
 
 ```js
 const { getIpfs, providers } = require('ipfs-provider')
-const { httpClient, jsIpfs, windowIpfs } = providers
+const { httpClient, jsIpfs } = providers
 
 const { ipfs, provider, apiAddress } = await getIpfs({
   // when httpClient provider is used multiple times
@@ -68,24 +66,29 @@ const { ipfs, provider, apiAddress } = await getIpfs({
   // note this is an array, providers are tried in order:
   providers: [
 
-    // (1) try window.ipfs (experimental, but some browsers expose it),
-    windowIpfs({
-      // request specific permissions upfront (optional)
-      permissions: { commands: ['files.add', 'files.cat'] }
-    }),
-
-    // (2) try various HTTP endpoints (best-effort),
+    // try various HTTP endpoints (best-effort),
     httpClient({
-      // (2.1) try multiaddr of a local node
+      // (1) try multiaddr of a local node
       apiAddress: '/ip4/127.0.0.1/tcp/5001'
     }),
-    httpClient(), // (2.2) try "/api/v0/" on the same Origin as the page
+    httpClient(), // (2) try "/api/v0/" on the same Origin as the page
     httpClient({
-      // (2.3) try arbitrary API URL
+      // (3) try arbitrary API from URL string
       apiAddress: 'https://some.example.com:8080'
     }),
-
-    // (3) final fallback to spawning embedded js-ipfs running in-page
+    httpClient({
+      // (4) try API defined by a custom http client config
+      apiAddress: {
+        host: 'apis.example.com',
+        port: '443',
+        protocol: 'https',
+        apiPath: 'custom/path/to/api/v0',
+        headers: {
+          authorization: 'Basic dXNlcjpwYXNz'
+        }
+      }
+    }),
+    // (5) final fallback to spawning embedded js-ipfs running in-page
     jsIpfs({
       // js-ipfs package is used only once, as a last resort
       loadJsIpfsModule: () => require('ipfs'),
@@ -118,16 +121,16 @@ See [`examples/`](./examples) for sample code and demonstration of advanced fall
 You can customize the order of the providers by passing a different array order to the `providers` array.
 
 
-For example, if you want to try `httpClient` and then `windowIpfs`, you should run it like this:
+For example, if you want to try `httpClient` and then `jsIpfs`, you should run it like this:
 
 ```js
 const { getIpfs, providers } = require('ipfs-provider')
-const { httpClient, windowIpfs } = providers
+const { httpClient, jsIpfs } = providers
 
 const { ipfs, provider } = await getIpfs({
   providers: [
     httpClient(),
-    windowIpfs()
+    jsIpfs()
   ]
 })
 ```
@@ -199,8 +202,8 @@ const { ipfs, provider } = await getIpfs({
 
 ### `windowIpfs`
 
-[`window.ipfs`](https://github.com/ipfs-shipyard/ipfs-companion/blob/master/docs/window.ipfs.md) is created by [ipfs-companion](https://github.com/ipfs/ipfs-companion) browser extension.
-It supports passing an optional list of permissions to [display a single ACL prompt](https://github.com/ipfs-shipyard/ipfs-companion/blob/master/docs/window.ipfs.md#do-i-need-to-confirm-every-api-call) the first time it is used:
+[`window.ipfs`](https://github.com/ipfs-shipyard/ipfs-companion/blob/master/docs/window.ipfs.md) was an experiment created by [ipfs-companion](https://github.com/ipfs/ipfs-companion) browser extension.
+It supported passing an optional list of permissions to [display a single ACL prompt](https://github.com/ipfs-shipyard/ipfs-companion/blob/master/docs/window.ipfs.md#do-i-need-to-confirm-every-api-call) the first time it is used:
 
 ```js
 const { ipfs, provider } = await getIpfs({
