@@ -1,3 +1,13 @@
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/ipfs-shipyard/ipfs-provider/compare/v1.0.0...v1.1.0) (2020-09-09)
+
+
+### Features
+
+* support custom config for ipfs-http-client ([#24](https://github.com/ipfs-shipyard/ipfs-provider/issues/24)) ([319ba34](https://github.com/ipfs-shipyard/ipfs-provider/commit/319ba34))
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/ipfs-shipyard/ipfs-provider/compare/v0.2.2...v1.0.0) (2020-04-22)
 
