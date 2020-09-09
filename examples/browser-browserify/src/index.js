@@ -1,6 +1,6 @@
 'use strict'
 
-const { Buffer } = require('buffer')
+const Buffer = require('buffer/').Buffer
 const { getIpfs, providers } = require('ipfs-provider')
 const { httpClient, jsIpfs, windowIpfs } = providers
 
@@ -40,13 +40,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function store () {
     const toStore = document.getElementById('source').value
-    for await (const file of ipfs.add(toStore)) {
-      if (file && file.cid) {
-        console.log('successfully stored', file)
-        await display(file.cid.toString())
-      } else {
-        console.error('unable to add', file)
-      }
+    const result = await ipfs.add(toStore)
+    if (result && result.cid) {
+      console.log('successfully stored', result)
+      await display(result.cid.toString())
+    } else {
+      console.error('unable to ipfs.add', result)
     }
   }
 
