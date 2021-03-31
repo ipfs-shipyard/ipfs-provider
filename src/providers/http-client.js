@@ -17,7 +17,7 @@ const { DEFAULT_HTTP_API } = require('../constants/defaults')
  * 2. Try current origin
  * 3. Try DEFAULT_HTTP_API
 */
-async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connectionTest }) {
+async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connectionTest, ...options }) {
   // Find HTTP client
   let httpClient
   if (loadHttpClientModule) httpClient = await loadHttpClientModule()
@@ -36,7 +36,7 @@ async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connecti
 
   // If explicit custom apiAddress provided, only try that.
   if (apiAddress) {
-    return maybeApi({ apiAddress, connectionTest, httpClient })
+    return maybeApi({ apiAddress, connectionTest, httpClient, ...options })
   }
 
   // Current origin is not localhost:5001 so try with current origin info
@@ -53,14 +53,14 @@ async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connecti
   }
 
   // ...otherwise try /ip4/127.0.0.1/tcp/5001
-  return maybeApi({ apiAddress: DEFAULT_HTTP_API, connectionTest, httpClient })
+  return maybeApi({ apiAddress: DEFAULT_HTTP_API, connectionTest, httpClient, ...options })
 }
 
 // Init and test an api client against provided API address.
 // Returns js-ipfs-http-client instance or null
-async function maybeApi ({ apiAddress, connectionTest, httpClient }) {
+async function maybeApi ({ apiAddress, connectionTest, httpClient, ...options }) {
   try {
-    const ipfs = httpClient(copyIfObject(apiAddress))
+    const ipfs = httpClient({ ...copyIfObject(apiAddress), ...options })
     await connectionTest(ipfs)
     return { ipfs, provider: PROVIDERS.httpClient, apiAddress }
   } catch (error) {
@@ -76,7 +76,7 @@ async function maybeApi ({ apiAddress, connectionTest, httpClient }) {
 const copyIfObject = (apiAddress) => {
   return (typeof apiAddress === 'object')
     ? JSON.parse(JSON.stringify(apiAddress))
-    : apiAddress
+    : { url: apiAddress }
 }
 
 module.exports = tryHttpClient
