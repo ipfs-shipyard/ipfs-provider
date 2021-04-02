@@ -31,12 +31,12 @@
   },
   "homepage": "https://github.com/ipfs-shipyard/ipfs-provider#readme",
   "dependencies": {
-    "iso-url": "~0.4.7",
-    "merge-options": "^3.0.1"
+    "iso-url": "^1.1.5",
+    "merge-options": "^3.0.4"
   },
   "devDependencies": {
     "aegir": "^26.0.0",
-    "ipfs-http-client": "^46.1.1",
+    "ipfs-http-client": "^49.0.4",
     "jest": "^26.4.2",
     "standard": "^14.3.4"
   },

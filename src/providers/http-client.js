@@ -35,7 +35,7 @@ async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connecti
   httpClient = httpClient.default || httpClient // TODO: create 'import' demo in examples/
 
   // If explicit custom apiAddress provided, only try that.
-  if (apiAddress) {
+  if (apiAddress || options.url || options.host) {
     return maybeApi({ apiAddress, connectionTest, httpClient, ...options })
   }
 
@@ -47,7 +47,8 @@ async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connecti
     const res = await maybeApi({
       apiAddress: origin.toString(),
       connectionTest,
-      httpClient
+      httpClient,
+      ...options
     })
     if (res) return res
   }
@@ -60,7 +61,7 @@ async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connecti
 // Returns js-ipfs-http-client instance or null
 async function maybeApi ({ apiAddress, connectionTest, httpClient, ...options }) {
   try {
-    const ipfs = httpClient({ ...copyIfObject(apiAddress), ...options })
+    const ipfs = httpClient({ ...options, ...clientOptions(apiAddress) })
     await connectionTest(ipfs)
     return { ipfs, provider: PROVIDERS.httpClient, apiAddress }
   } catch (error) {
@@ -70,13 +71,19 @@ async function maybeApi ({ apiAddress, connectionTest, httpClient, ...options })
   }
 }
 
-// Some versions of js-ipfs-http-client mutate the object passed instead of
-// URL/multiaddr string. This wrapper preserves the original config to ensure one can
-// compare objects returned apiAddress to tell which provider was successful
-const copyIfObject = (apiAddress) => {
-  return (typeof apiAddress === 'object')
-    ? JSON.parse(JSON.stringify(apiAddress))
-    : { url: apiAddress }
+// Convert string with URL or Multiaddr to explicit configuration object
+// https://www.npmjs.com/package/ipfs-http-client#usage
+const clientOptions = (apiAddress) => {
+  switch (typeof apiAddress) {
+    case 'string':
+      return { url: apiAddress }
+    case 'object':
+      return JSON.parse(JSON.stringify(apiAddress)) // ensure deep copy
+    case 'undefined':
+      return {}
+    default:
+      throw new Error('invalid apiAddress passed to httpClient')
+  }
 }
 
 module.exports = tryHttpClient

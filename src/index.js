@@ -10,9 +10,9 @@ const tryJsIpfs = require('./providers/js-ipfs')
 const defaultGlobalOpts = {
   connectionTest: async (ipfs) => {
     // ipfs connection is working if we can fetch data via async iterator API
-    const cid = 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn'
+    const cid = 'bafkqaaa'
     for await (const file of ipfs.get(cid)) {
-      return file.type === 'dir' && file.name === cid
+      return file.type === 'file' && file.name === cid
     }
   }
 }
