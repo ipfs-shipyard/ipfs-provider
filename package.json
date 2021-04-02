@@ -1,6 +1,6 @@
 {
   "name": "ipfs-provider",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Connect to IPFS via an available provider",
   "main": "src/index.js",
   "files": [
@@ -41,6 +41,7 @@
   "contributors": [
     "Diogo Silva <fsdiogo@gmail.com>",
     "Marcin Rataj <lidel@lidel.org>",
-    "Henrique Dias <hacdias@gmail.com>"
+    "Henrique Dias <hacdias@gmail.com>",
+    "Rafael Ramalho <rafazelramalho19@gmail.com>"
   ]
 }
