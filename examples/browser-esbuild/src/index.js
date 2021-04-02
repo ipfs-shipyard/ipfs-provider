@@ -50,11 +50,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function display (cid) {
     const chunks = []
-    for await (const data of ipfs.cat(cid)) {
-      document.getElementById('cid').innerText = cid
-      document.getElementById('content').innerText = new TextDecoder().decode(data)
-      document.getElementById('output').setAttribute('style', 'display: block')
+    for await (const chunk of ipfs.cat(cid)) {
+      chunks.push(chunk)
     }
+
+    // merge all chunks into single byte buffer (does not matter here, as text
+    // entered by user will be short enough to fit in a single chunk, but makes
+    // this example useful for bigger files)
+    const data = new Uint8Array(chunks.reduce((acc, curr) => [...acc, ...curr], []))
+
+    document.getElementById('cid').innerText = cid
+    document.getElementById('content').innerText = new TextDecoder().decode(data)
+    document.getElementById('output').setAttribute('style', 'display: block')
   }
 
   document.getElementById('store').onclick = store
