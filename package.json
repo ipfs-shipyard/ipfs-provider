@@ -13,7 +13,6 @@
     "release-minor": "npm test && aegir release --type minor --test false",
     "release-major": "npm test && aegir release --type major --test false",
     "build": "aegir build",
-    "lint:fix": "standard --fix ./src/**.js ./test/**.js ./examples/**.js",
     "test": "jest --verbose ./test"
   },
   "repository": {
@@ -37,8 +36,7 @@
   "devDependencies": {
     "aegir": "^32.2.0",
     "ipfs-http-client": "^49.0.4",
-    "jest": "^26.4.2",
-    "standard": "^14.3.4"
+    "jest": "^26.6.3"
   },
   "contributors": [
     "Diogo Silva <fsdiogo@gmail.com>",
