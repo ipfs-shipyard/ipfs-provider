@@ -35,7 +35,7 @@
     "merge-options": "^3.0.4"
   },
   "devDependencies": {
-    "aegir": "^26.0.0",
+    "aegir": "^32.2.0",
     "ipfs-http-client": "^49.0.4",
     "jest": "^26.4.2",
     "standard": "^14.3.4"
