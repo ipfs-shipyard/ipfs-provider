@@ -1,10 +1,10 @@
 'use strict'
 
-const Buffer = require('buffer/').Buffer
 const { getIpfs, providers } = require('ipfs-provider')
-const { httpClient, jsIpfs, windowIpfs } = providers
+const { httpClient, jsIpfs } = providers
 
 document.addEventListener('DOMContentLoaded', async () => {
+  console.log('IPFS starting..')
   const { ipfs, provider, apiAddress } = await getIpfs({
     // HTTP client library can be defined globally to keep code minimal
     // when httpClient provider is used multiple times
@@ -13,9 +13,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // then http apis (if up),
     // and finally fallback to spawning embedded js-ipfs
     providers: [
-      windowIpfs({
-        permissions: { commands: ['files.add', 'files.cat'] }
-      }),
       httpClient({
         // try multiaddr of a local node
         apiAddress: '/ip4/127.0.0.1/tcp/5001'
@@ -27,8 +24,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       }),
       jsIpfs({
         // js-ipfs package is used only once, here
-        loadJsIpfsModule: () => require('ipfs'), // note require instead of
-        options: { } // pass config: https://github.com/ipfs/js-ipfs/blob/master/packages/ipfs/docs/MODULE.md#ipfscreateoptions
+        loadJsIpfsModule: () => require('ipfs-core'), // note require instead of
+        options: {
+          init: { alogorithm: 'ed25519' }
+        }
       })
     ]
   })
@@ -54,9 +53,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     for await (const chunk of ipfs.cat(cid)) {
       chunks.push(chunk)
     }
-    const data = Buffer.concat(chunks).toString()
+
+    // merge all chunks into single byte buffer (does not matter here, as text
+    // entered by user will be short enough to fit in a single chunk, but makes
+    // this example useful for bigger files)
+    const data = new Uint8Array(chunks.reduce((acc, curr) => [...acc, ...curr], []))
+
     document.getElementById('cid').innerText = cid
-    document.getElementById('content').innerText = data
+    document.getElementById('content').innerText = new TextDecoder().decode(data)
     document.getElementById('output').setAttribute('style', 'display: block')
   }
 

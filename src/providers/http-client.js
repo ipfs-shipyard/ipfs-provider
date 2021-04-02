@@ -17,7 +17,7 @@ const { DEFAULT_HTTP_API } = require('../constants/defaults')
  * 2. Try current origin
  * 3. Try DEFAULT_HTTP_API
 */
-async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connectionTest }) {
+async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connectionTest, ...options }) {
   // Find HTTP client
   let httpClient
   if (loadHttpClientModule) httpClient = await loadHttpClientModule()
@@ -35,8 +35,8 @@ async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connecti
   httpClient = httpClient.default || httpClient // TODO: create 'import' demo in examples/
 
   // If explicit custom apiAddress provided, only try that.
-  if (apiAddress) {
-    return maybeApi({ apiAddress, connectionTest, httpClient })
+  if (apiAddress || options.url || options.host) {
+    return maybeApi({ apiAddress, connectionTest, httpClient, ...options })
   }
 
   // Current origin is not localhost:5001 so try with current origin info
@@ -47,20 +47,21 @@ async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connecti
     const res = await maybeApi({
       apiAddress: origin.toString(),
       connectionTest,
-      httpClient
+      httpClient,
+      ...options
     })
     if (res) return res
   }
 
   // ...otherwise try /ip4/127.0.0.1/tcp/5001
-  return maybeApi({ apiAddress: DEFAULT_HTTP_API, connectionTest, httpClient })
+  return maybeApi({ apiAddress: DEFAULT_HTTP_API, connectionTest, httpClient, ...options })
 }
 
 // Init and test an api client against provided API address.
 // Returns js-ipfs-http-client instance or null
-async function maybeApi ({ apiAddress, connectionTest, httpClient }) {
+async function maybeApi ({ apiAddress, connectionTest, httpClient, ...options }) {
   try {
-    const ipfs = httpClient(copyIfObject(apiAddress))
+    const ipfs = httpClient({ ...options, ...clientOptions(apiAddress) })
     await connectionTest(ipfs)
     return { ipfs, provider: PROVIDERS.httpClient, apiAddress }
   } catch (error) {
@@ -70,13 +71,19 @@ async function maybeApi ({ apiAddress, connectionTest, httpClient }) {
   }
 }
 
-// Some versions of js-ipfs-http-client mutate the object passed instead of
-// URL/multiaddr string. This wrapper preserves the original config to ensure one can
-// compare objects returned apiAddress to tell which provider was successful
-const copyIfObject = (apiAddress) => {
-  return (typeof apiAddress === 'object')
-    ? JSON.parse(JSON.stringify(apiAddress))
-    : apiAddress
+// Convert string with URL or Multiaddr to explicit configuration object
+// https://www.npmjs.com/package/ipfs-http-client#usage
+const clientOptions = (apiAddress) => {
+  switch (typeof apiAddress) {
+    case 'string':
+      return { url: apiAddress }
+    case 'object':
+      return JSON.parse(JSON.stringify(apiAddress)) // ensure deep copy
+    case 'undefined':
+      return {}
+    default:
+      throw new Error('invalid apiAddress passed to httpClient')
+  }
 }
 
 module.exports = tryHttpClient

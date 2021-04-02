@@ -127,7 +127,33 @@ describe('provider: httpClient', () => {
     expect(config.pathname).toEqual('/api/v0')
   })
 
-  it('should use the apiAddress (config object with basic auth)', async () => {
+  it('should use the apiAddress (simplified config object with basic auth)', async () => {
+    const clientOpts = {
+      url: 'https://1.1.2.3:1123/some/custom/path/to/api/v0',
+      headers: {
+        authorization: 'Basic dXNlcjpwYXNz'
+      }
+    }
+    const opts = {
+      apiAddress: clientOpts,
+      root: {
+        location: new URL('http://localhost:5001')
+      },
+      loadHttpClientModule: () => httpClient,
+      connectionTest: jest.fn().mockResolvedValueOnce(true)
+    }
+    const { ipfs, provider, apiAddress } = await tryHttpClient(opts)
+    expect(apiAddress).toEqual(clientOpts)
+    expect(provider).toEqual(PROVIDERS.httpClient)
+    expect(opts.connectionTest.mock.calls.length).toBe(1)
+    const config = ipfs.getEndpointConfig()
+    expect(config.host).toEqual('1.1.2.3')
+    expect(config.port).toEqual('1123')
+    expect(config.protocol).toEqual('https:')
+    expect(config.pathname).toEqual('/some/custom/path/to/api/v0')
+  })
+
+  it('should use the apiAddress (detailed config object with basic auth)', async () => {
     const clientOpts = {
       host: '1.1.1.3',
       port: '1113',

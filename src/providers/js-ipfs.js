@@ -2,7 +2,7 @@
 
 const PROVIDERS = require('../constants/providers')
 
-function createIpfs (ipfsModule, opts) {
+async function createIpfs (ipfsModule, opts) {
   // Allow the use of `import` or `require` on `getJsIpfs` fn
   ipfsModule = ipfsModule.default || ipfsModule
   return ipfsModule.create(opts)
