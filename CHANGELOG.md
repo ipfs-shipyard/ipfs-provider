@@ -1,3 +1,7 @@
+## [2.0.1](https://github.com/ipfs-shipyard/ipfs-provider/compare/v2.0.0...v2.0.1) (2021-04-02)
+
+
+
 # [2.0.0](https://github.com/ipfs-shipyard/ipfs-provider/compare/v1.1.0...v2.0.0) (2021-04-02)
 
 
