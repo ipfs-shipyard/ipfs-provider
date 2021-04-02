@@ -1,3 +1,12 @@
+# [2.0.0](https://github.com/ipfs-shipyard/ipfs-provider/compare/v1.1.0...v2.0.0) (2021-04-02)
+
+
+### Features
+
+* add options to http client ([#30](https://github.com/ipfs-shipyard/ipfs-provider/issues/30)) ([4115818](https://github.com/ipfs-shipyard/ipfs-provider/commit/41158187fcc3153a0824b2cc871da7c769879415))
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/ipfs-shipyard/ipfs-provider/compare/v1.0.0...v1.1.0) (2020-09-09)
 
