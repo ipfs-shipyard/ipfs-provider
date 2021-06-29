@@ -31,8 +31,8 @@ $ npm install ipfs-provider
 ### via prebuilt browser bundles
 
 ```html
-<!-- remember to include js-ipfs and js-ipfs-http-client, if they are used -->
-<script src="https://cdn.jsdelivr.net/npm/ipfs/dist/index.min.js"></script>
+<!-- remember to include js-ipfs (core) and/or js-ipfs-http-client, if they are used -->
+<script src="https://cdn.jsdelivr.net/npm/ipfs-core/dist/index.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ipfs-http-client/dist/index.min.js"></script>
 
 <!-- prebuilt and minified bundle -->
@@ -42,7 +42,7 @@ $ npm install ipfs-provider
   const { getIpfs, providers } = window.IpfsProvider
   const { ipfs, provider, apiAddress } = await getIpfs({
     loadHttpClientModule: () => window.IpfsHttpClient,
-    loadJsIpfsModule: () => window.Ipfs,
+    loadJsIpfsModule: () => window.IpfsCore,
     providers: [ /* see Usage below */ ]
     })
 </script>
@@ -91,7 +91,7 @@ const { ipfs, provider, apiAddress } = await getIpfs({
     // (5) final fallback to spawning embedded js-ipfs running in-page
     jsIpfs({
       // js-ipfs package is used only once, as a last resort
-      loadJsIpfsModule: () => require('ipfs'),
+      loadJsIpfsModule: () => require('ipfs-core'),
       options: { } // pass config: https://github.com/ipfs/js-ipfs/blob/master/packages/ipfs/docs/MODULE.md#ipfscreateoptions
     })
   ]
@@ -187,7 +187,7 @@ in the context of the current page using customizable constructor:
 const { ipfs, provider } = await getIpfs({
   providers: [
     jsIpfs({
-      loadJsIpfsModule: () => require('ipfs'),
+      loadJsIpfsModule: () => require('ipfs-core'),
       options: { /* advanced config */ }
     })
   ]
@@ -199,6 +199,7 @@ const { ipfs, provider } = await getIpfs({
    This works well with [dynamic `import()`](https://developers.google.com/web/updates/2017/11/dynamic-import), so you can lazily load js-ipfs when it is needed.
    -->
 - `options` should be an object which specifies [advanced configurations](https://github.com/ipfs/js-ipfs#ipfs-constructor) to the node.
+- **TIP:** when used in a browser context, use `ipfs-core` for a smaller browser bundle
 
 ### `windowIpfs`
 
