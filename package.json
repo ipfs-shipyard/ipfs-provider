@@ -34,9 +34,9 @@
     "merge-options": "^3.0.4"
   },
   "devDependencies": {
-    "aegir": "^32.2.0",
-    "ipfs-http-client": "^49.0.4",
-    "jest": "^26.6.3"
+    "aegir": "^35.0.2",
+    "ipfs-http-client": "^52.0.1",
+    "jest": "^27.0.6"
   },
   "contributors": [
     "Marcin Rataj <lidel@lidel.org>",

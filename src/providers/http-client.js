@@ -61,7 +61,7 @@ async function tryHttpClient ({ loadHttpClientModule, apiAddress, root, connecti
 // Returns js-ipfs-http-client instance or null
 async function maybeApi ({ apiAddress, connectionTest, httpClient, ...options }) {
   try {
-    const ipfs = httpClient({ ...options, ...clientOptions(apiAddress) })
+    const ipfs = httpClient.create({ ...options, ...clientOptions(apiAddress) })
     await connectionTest(ipfs)
     return { ipfs, provider: PROVIDERS.httpClient, apiAddress }
   } catch (error) {
