@@ -1,3 +1,12 @@
+# [2.1.0](https://github.com/ipfs-shipyard/ipfs-provider/compare/v2.0.1...v2.1.0) (2021-09-01)
+
+
+### Features
+
+* support 'create' constructor from ipfs-http-client ([#38](https://github.com/ipfs-shipyard/ipfs-provider/issues/38)) ([df7b9b3](https://github.com/ipfs-shipyard/ipfs-provider/commit/df7b9b3cc7423a4ac894dbec813eb3c0a65fef2f))
+
+
+
 ## [2.0.1](https://github.com/ipfs-shipyard/ipfs-provider/compare/v2.0.0...v2.0.1) (2021-04-02)
 
 
