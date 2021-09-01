@@ -301,6 +301,18 @@ describe('provider: httpClient', () => {
     expect(constructorHttpClient.create.mock.calls.length).toBe(1)
   })
 
+  it('should work with loadHttpClientModule without .create', async () => {
+    const constructorHttpClient = jest.fn()
+    const opts = {
+      apiAddress: '/ip4/1.2.3.4/tcp/1111/https',
+      loadHttpClientModule: () => constructorHttpClient,
+      connectionTest: jest.fn().mockResolvedValueOnce(true)
+    }
+    const { apiAddress } = await tryHttpClient(opts)
+    expect(apiAddress).toEqual(opts.apiAddress)
+    expect(constructorHttpClient.mock.calls.length).toBe(1)
+  })
+
   it('should throw is no loadHttpClientModule nor window.IpfsHttpClient is provided', () => {
     const opts = {
       apiAddress: '/ip4/1.2.3.4/tcp/1111/https',
