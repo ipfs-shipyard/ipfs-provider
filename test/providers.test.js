@@ -221,7 +221,9 @@ describe('provider: httpClient', () => {
   })
 
   it('should try API at window.location.origin', async () => {
-    const fakeHttpClient = jest.fn()
+    const fakeHttpClient = {
+      create: jest.fn()
+    }
     const opts = {
       root: {
         location: new URL('http://localhost:9999/subdir/some-page.html')
@@ -233,7 +235,7 @@ describe('provider: httpClient', () => {
     expect(apiAddress).toEqual('http://localhost:9999/')
     expect(provider).toEqual(PROVIDERS.httpClient)
     expect(opts.connectionTest.mock.calls.length).toBe(1)
-    expect(fakeHttpClient.mock.calls.length).toBe(1)
+    expect(fakeHttpClient.create.mock.calls.length).toBe(1)
   })
 
   it('should use the DEFAULT_HTTP_API if location fails', async () => {
@@ -280,7 +282,9 @@ describe('provider: httpClient', () => {
   })
 
   it('should prefer loadHttpClientModule over window.IpfsHttpClient', async () => {
-    const constructorHttpClient = jest.fn()
+    const constructorHttpClient = {
+      create: jest.fn()
+    }
     const windowHttpClient = jest.fn()
     const opts = {
       apiAddress: '/ip4/1.2.3.4/tcp/1111/https',
@@ -294,6 +298,18 @@ describe('provider: httpClient', () => {
     const { apiAddress } = await tryHttpClient(opts)
     expect(apiAddress).toEqual(opts.apiAddress)
     expect(windowHttpClient.mock.calls.length).toBe(0)
+    expect(constructorHttpClient.create.mock.calls.length).toBe(1)
+  })
+
+  it('should work with loadHttpClientModule without .create', async () => {
+    const constructorHttpClient = jest.fn()
+    const opts = {
+      apiAddress: '/ip4/1.2.3.4/tcp/1111/https',
+      loadHttpClientModule: () => constructorHttpClient,
+      connectionTest: jest.fn().mockResolvedValueOnce(true)
+    }
+    const { apiAddress } = await tryHttpClient(opts)
+    expect(apiAddress).toEqual(opts.apiAddress)
     expect(constructorHttpClient.mock.calls.length).toBe(1)
   })
 
